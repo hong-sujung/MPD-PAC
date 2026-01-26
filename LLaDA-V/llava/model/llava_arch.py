@@ -355,7 +355,6 @@ class LlavaMetaForCausalLM(ABC):
     def prepare_inputs_labels_for_multimodal(self, input_ids, position_ids, attention_mask, past_key_values, labels, images, modalities=["image"], image_sizes=None, is_llada=False):
         vision_tower = self.get_vision_tower()
 
-        # 추가
         img_start = torch.nonzero(input_ids[0] == -200, as_tuple=False).squeeze(-1).tolist()
         h,w,height,width = None,None,None,None
         # rank_print(modalities)
@@ -564,10 +563,8 @@ class LlavaMetaForCausalLM(ABC):
             if num_images == 0:
                 cur_image_features = image_features[cur_image_idx]
                 cur_input_embeds_1 = self.get_model().embed_tokens(cur_input_ids)
-                # 추가
                 target_device = cur_input_embeds_1.device
                 cur_image_features = cur_image_features.to(target_device)
-                #=====
                 cur_input_embeds = torch.cat([cur_input_embeds_1, cur_image_features[0:0]], dim=0)
                 new_input_embeds.append(cur_input_embeds)
                 new_labels.append(labels[batch_idx])

@@ -1,4 +1,4 @@
-#    Copyright 2024 Hao Zhang
+#    Copyright 2023 Zebin You
 #
 #    Licensed under the Apache License, Version 2.0 (the "License");
 #    you may not use this file except in compliance with the License.
@@ -14,45 +14,51 @@
 
 
 from typing import List, Optional, Tuple, Union, Dict
+
 import torch
 import torch.nn as nn
-from torch.nn import CrossEntropyLoss
 
 import transformers
-from transformers import AutoConfig, AutoModelForCausalLM
+from transformers import AutoConfig, AutoModelForCausalLM, LlamaConfig, LlamaModel, LlamaForCausalLM
+
+
+from torch.nn import CrossEntropyLoss
 
 from transformers.modeling_outputs import CausalLMOutputWithPast
 from transformers.generation.utils import GenerateOutput
 
-# from ...constants import IGNORE_INDEX, IMAGE_TOKEN_INDEX, DEFAULT_IMAGE_TOKEN, DEFAULT_IM_START_TOKEN, DEFAULT_IM_END_TOKEN
 from llava.model.llava_arch import LlavaMetaModel, LlavaMetaForCausalLM
-from transformers import Qwen2MoeConfig, Qwen2MoeModel, Qwen2MoeForCausalLM
-
-# from .qwen.modeling_qwen import QWenLMHeadModel, QWenModel
-# from .qwen.configuration_qwen import QWenConfig
+from llava.model.language_model.configuration_llada import LLaDAConfig
+from llava.model.language_model.modeling_llada_hs import LLaDAModel, LLaDAModelLM # 변경
 
 
-class LlavaQwenMoeConfig(Qwen2MoeConfig):
-    model_type = "llava_qwen_moe"
+class LlavaLLaDAConfig(LLaDAConfig):
+    model_type = "llava_llada"      
+    temperature: float = 0.0  # reset to 0.0, previously 0.9 for Vicuna
+    max_new_tokens: int = 1024
+    do_sample: bool = False
+    top_p: Optional[float] = None
+    # rope_scaling: Optional[dict] = {}
 
 
-class LlavaQwenMoeModel(LlavaMetaModel, Qwen2MoeModel):
-    config_class = LlavaQwenMoeConfig
+class LlavaLLaDAModel(LlavaMetaModel, LLaDAModel):
+    config_class = LlavaLLaDAConfig
 
-    def __init__(self, config: Qwen2MoeConfig):
-        super(LlavaQwenMoeModel, self).__init__(config)
+    def __init__(self, config: LLaDAConfig):
+        super(LlavaLLaDAModel, self).__init__(config)
 
 
-class LlavaQwenMoeForCausalLM(Qwen2MoeForCausalLM, LlavaMetaForCausalLM):
-    config_class = LlavaQwenMoeConfig
+class LlavaLLaDAModelLM(LLaDAModelLM, LlavaMetaForCausalLM):
+    config_class = LlavaLLaDAConfig
 
     def __init__(self, config):
-        # super(Qwen2MoeForCausalLM, self).__init__(config)
-        Qwen2MoeForCausalLM.__init__(self, config)
-        config.model_type = "llava_qwen_moe"
-        config.rope_scaling = None
+        LLaDAModelLM.__init__(self, config)
 
-        self.model = LlavaQwenMoeModel(config)
+        # configure default generation settings
+        config.model_type = "llava_llada"
+        # config.rope_scaling = None
+
+        self.model = LlavaLLaDAModel(config)
         self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
         # Initialize weights and apply final processing
         self.post_init()
@@ -75,13 +81,21 @@ class LlavaQwenMoeForCausalLM(Qwen2MoeForCausalLM, LlavaMetaForCausalLM):
         image_sizes: Optional[List[List[int]]] = None,
         return_dict: Optional[bool] = None,
         modalities: Optional[List[str]] = ["image"],
-        dpo_forward: Optional[bool] = False,
+        dpo_forward: Optional[bool] = None,
         cache_position=None,
     ) -> Union[Tuple, CausalLMOutputWithPast]:
+        # labels = torch.full_like(input_ids, -100)
 
-        if inputs_embeds is None:
-            (input_ids, position_ids, attention_mask, past_key_values, inputs_embeds, labels) = self.prepare_inputs_labels_for_multimodal(input_ids, position_ids, attention_mask, past_key_values, labels, images, modalities, image_sizes)
-
+        if inputs_embeds is None and attention_mask is not None:
+            # donate multi-dialogue 
+            (input_ids, position_ids, attention_mask, past_key_values, inputs_embeds, labels, conversation_ids) = self.prepare_inputs_labels_for_multimodal(input_ids, position_ids, attention_mask, past_key_values, labels, images, modalities, image_sizes, is_llada=True)
+        elif inputs_embeds is None:
+            if images is not None:
+                (input_ids, position_ids, attention_mask, past_key_values, inputs_embeds, labels, height,width,h,w) = self.prepare_inputs_labels_for_multimodal(input_ids, position_ids, attention_mask, past_key_values, labels, images, modalities, image_sizes)
+            else:
+                (input_ids, position_ids, attention_mask, past_key_values, inputs_embeds, labels) = self.prepare_inputs_labels_for_multimodal(input_ids, position_ids, attention_mask, past_key_values, labels, images, modalities, image_sizes)
+            
+        conversation_ids = None
         if dpo_forward:
             outputs = self.model(
                 input_ids=input_ids,
@@ -100,6 +114,9 @@ class LlavaQwenMoeForCausalLM(Qwen2MoeForCausalLM, LlavaMetaForCausalLM):
             return logits, labels
 
         else:
+            import sys
+            # sys.path.append('/nfs/home/noonddudung2/cvpr2026/LLaDA-V/train/')
+            # from llava.constants import IGNORE_INDEX
             return super().forward(
                 input_ids=input_ids,
                 attention_mask=attention_mask,
@@ -111,6 +128,7 @@ class LlavaQwenMoeForCausalLM(Qwen2MoeForCausalLM, LlavaMetaForCausalLM):
                 output_attentions=output_attentions,
                 output_hidden_states=output_hidden_states,
                 return_dict=return_dict,
+                conversation_ids=conversation_ids,
             )
 
     @torch.no_grad()
@@ -120,19 +138,32 @@ class LlavaQwenMoeForCausalLM(Qwen2MoeForCausalLM, LlavaMetaForCausalLM):
         images: Optional[torch.Tensor] = None,
         image_sizes: Optional[torch.Tensor] = None,
         modalities: Optional[List[str]] = ["image"],
+        alpha: float = 0.0,
+        img_start: Optional[List[int]] = None,
+        prompt_length: Optional[int] = None,
+        rope: Optional[float] = None,
+        prior: Optional[float] = None,
+        mode: Optional[str] = None,
+        k: Optional[int] = None,
+        hs: Optional[bool] = False,
+        slope: Optional[float] = None,
+        center: Optional[float] = None,
         **kwargs,
     ) -> Union[GenerateOutput, torch.LongTensor]:
+        modalities = kwargs.pop("modalities", None) if "modalities" in kwargs and modalities is None else modalities
         position_ids = kwargs.pop("position_ids", None)
         attention_mask = kwargs.pop("attention_mask", None)
         if "inputs_embeds" in kwargs:
             raise NotImplementedError("`inputs_embeds` is not supported")
 
         if images is not None:
-            (inputs, position_ids, attention_mask, _, inputs_embeds, _) = self.prepare_inputs_labels_for_multimodal(inputs, position_ids, attention_mask, None, None, images, modalities, image_sizes=image_sizes)
+            (inputs, position_ids, attention_mask, _, inputs_embeds, _, height, width, h, w) = self.prepare_inputs_labels_for_multimodal(inputs, position_ids, attention_mask, None, None, images, modalities, image_sizes=image_sizes)
+            return super().generate_with_embeds(inputs_embeds=inputs_embeds, height=height, width=width, h=h, w=w, img_start=img_start[0], prompt_length=prompt_length, alpha=alpha, rope=rope, prior=prior,mode=mode, k=k, hs=hs, slope=slope,center=center, **kwargs)
+
         else:
             inputs_embeds = self.get_model().embed_tokens(inputs)
+            return super().generate_with_embeds(inputs_embeds=inputs_embeds, **kwargs)
 
-        return super().generate(position_ids=position_ids, attention_mask=attention_mask, inputs_embeds=inputs_embeds, **kwargs)
 
     def prepare_inputs_for_generation(self, input_ids, past_key_values=None, inputs_embeds=None, **kwargs):
         images = kwargs.pop("images", None)
@@ -145,5 +176,5 @@ class LlavaQwenMoeForCausalLM(Qwen2MoeForCausalLM, LlavaMetaForCausalLM):
         return inputs
 
 
-AutoConfig.register("llava_qwen_moe", LlavaQwenMoeConfig)
-AutoModelForCausalLM.register(LlavaQwenMoeConfig, LlavaQwenMoeForCausalLM)
+AutoConfig.register("llava_llada", LlavaLLaDAConfig)
+AutoModelForCausalLM.register(LlavaLLaDAConfig, LlavaLLaDAModelLM)
