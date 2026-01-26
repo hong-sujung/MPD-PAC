@@ -1129,8 +1129,6 @@ class LLaDAModel(LLaDAPreTrainedModel):
 
 
         # Load layer-wise prior directions once
-        if not hasattr(self, 'layer_prior_dirs'):
-            self.layer_prior_dirs = torch.load('/nfs/home/noonddudung2/cvpr2026/LLaDA-V/train/prior_dirs.pt')
         for layer_idx, decoder_layer in enumerate(self.layers):
             if output_hidden_states:
                 all_hidden_states += (hidden_states,)
