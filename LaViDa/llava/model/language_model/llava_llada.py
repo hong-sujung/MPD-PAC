@@ -10,7 +10,7 @@ from torch.nn import CrossEntropyLoss
 
 from .llada.modeling_llada import LLaDAModel,LLaDAModelLM,LLaDAConfig,create_model_config_from_pretrained_config
 from .llada.generate import generate as llada_generate
-from .llada_hs.generate import generate as llada_hs_generate
+from .llada.generate import generate as llada_hs_generate
 from llava.model.language_model.llada.log_likelyhood import get_log_likelihood as get_log_likelihood
 from llava.model.llava_arch import LlavaMetaModel, LlavaMetaForCausalLM
 from transformers.modeling_outputs import CausalLMOutputWithPast
