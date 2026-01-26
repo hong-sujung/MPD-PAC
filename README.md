@@ -30,6 +30,7 @@ Our approach consists of two inference-time techniques:
 ### LLaDA-V
 Please follow the environment setup instructions provided in the official
 [LLaDA-V repository](https://github.com/ML-GSAI/LLaDA-V).
+
 Specifically, clone the repository and initialize the environment as follows:
 
 ```bash
@@ -40,6 +41,7 @@ bash init_env.sh
 ### LaViDa
 Please follow the environment setup instructions provided in the official
 [LaViDa repository](https://github.com/jacklishufan/LaViDa.git).
+
 The environment can be set up using the following steps.
 
 First, create and activate a conda environment:
