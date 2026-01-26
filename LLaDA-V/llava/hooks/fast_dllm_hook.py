@@ -334,14 +334,6 @@ class FastDLLMGenerationHook:
                         x0 = x0.to(x.device)
                         x[transfer_index] = x0[transfer_index]
 
-                        # 추가
-                        # with open("llada_debug_log.txt", "a") as f:
-                        #     f.write(f"[LLaDA-V] Block {num_block}, Step {i}\n")
-                        #     f.write("x: " + str(x.detach().cpu().numpy().tolist()) + "\n")
-                        #     f.write("mask_index: " + str(mask_index.detach().cpu().numpy().tolist()) + "\n")
-                        #     f.write("transfer_index: " + str(transfer_index.detach().cpu().numpy().tolist()) + "\n")
-                        #     f.write("x0: " + str(x0.detach().cpu().numpy().tolist()) + "\n")
-                        #     f.flush()
                     else:
                         x0, transfer_index = self._get_transfer_index(
                             logits, temperature, remasking, mask_index[:, block_start:], x[:, block_start:],
@@ -361,11 +353,6 @@ class FastDLLMGenerationHook:
                         transfer_index = transfer_index.to(x.device)
                         x0 = x0.to(x.device)
                         x[:, block_start:][transfer_index] = x0[transfer_index]
-                        #추가
-                        # if tokenizer is not None:
-                        #     decoded_text = tokenizer.decode(x[0][block_start:], skip_special_tokens=False)
-                        #     print(f"Step {i}: {decoded_text}")
-                    # print(logits.shape)
                     # Check for stop words
                     if stopping_criteria is not None:
                         generated_part = x[0, inputs_embeds.shape[1]:inputs_embeds.shape[1] + gen_length]

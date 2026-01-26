@@ -158,8 +158,7 @@ class LLaDARotaryEmbedding(nn.Module):
         
         elif mode == "sigmoid":
             band, beta = center, slope
-            # print('slope:', slope)
-            print('center:', center,'slope:', slope)
+
             y = torch.sigmoid(beta * (x - band))
         
         elif mode == "cosine":
@@ -338,7 +337,7 @@ class LLaDAAttention(nn.Module):
         self.v_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
         self.o_proj = nn.Linear(self.hidden_size, self.hidden_size, bias=config.attention_bias)
         self._init_rope()
-        # 추가
+
         self._qk_step = 0
         self.last_q = None
         self.last_k = None
@@ -428,29 +427,7 @@ class LLaDAAttention(nn.Module):
 
         key_states = repeat_kv(key_states, self.num_key_value_groups)
         value_states = repeat_kv(value_states, self.num_key_value_groups)
-        # 추가
-        # if getattr(self.config, "save_qk", False):
-        #     save_dir = getattr(self.config, "qk_save_dir", "./qk_debug")
-        #     import os
-        #     os.makedirs(save_dir, exist_ok=True)
 
-        #     save_dtype = getattr(self.config, "qk_save_dtype", torch.float32)
-        #     if isinstance(save_dtype, str):
-        #         save_dtype = getattr(torch, save_dtype, torch.float32)
-
-        #     q_to_save = query_states
-        #     k_to_save = key_states
-        #     # print(q_to_save.shape, k_to_save.shape)
-        #     q_to_save = q_to_save.detach().to(save_dtype).cpu()
-        #     k_to_save = k_to_save.detach().to(save_dtype).cpu()
-
-        #     self.last_q = q_to_save
-        #     self.last_k = k_to_save
-
-        #     layer_idx = self.layer_idx if self.layer_idx is not None else -1
-        #     filename = f"layer{layer_idx:03d}_step{self._qk_step:02d}.pt"
-        #     torch.save({"q": q_to_save, "k": k_to_save}, os.path.join(save_dir, filename))
-        #     self._qk_step += 1
         attn_weights = torch.matmul(query_states, key_states.transpose(2, 3)) / math.sqrt(self.head_dim)
 
         if attention_mask is not None:  # no matter the length, we just slice it
@@ -1694,8 +1671,7 @@ class LLaDAModelLM(LLaDAPreTrainedModel):
                                         pass
                             self._qk_step = st + 1
 
-                        #========== Prior-based modification (optional) ========#
-                        # If k is None, skip PCA/prior projection entirely.
+                        #========== MRS  ========#
                         H_full = outputs[0][0]  # (seq_len, D)
 
 
@@ -1704,7 +1680,6 @@ class LLaDAModelLM(LLaDAPreTrainedModel):
 
                             dev = H_full.device
 
-                            # Always move cached priors to the current device (safety for multi-GPU eval)
                             mu = self.prior_mu.to(dev)        # (D,)
                             Vt = self.prior_Vt.to(dev)        # (D, k)
                             u  = self.prior_u.to(dev)         # (k,)
@@ -1715,50 +1690,33 @@ class LLaDAModelLM(LLaDAPreTrainedModel):
                             if masked_positions.any():
                                 H_masked = H_full[masked_positions]                 # (N, D)
 
-                                # Center (compute in float32 for stability)
                                 delta = (H_masked - mu.unsqueeze(0)).float()        # (N, D)
 
-                                # Map to subspace: z in R^k
                                 z = delta @ Vt                                      # (N, k)
 
-                                # Project z onto prior-last direction u (1D)
                                 proj_scalar = (z * u.unsqueeze(0)).sum(dim=-1, keepdim=True)   # (N, 1)
                                 proj_vec = proj_scalar * u.unsqueeze(0)                        # (N, k)
 
-                                # Cosine alignment cos(z, u) = <z,u> / ||z||
                                 z_norm = torch.norm(z, dim=-1, keepdim=True) + 1e-6
                                 cos_zu = (proj_scalar / z_norm).squeeze(-1)                    # (N,)
                                 cos_zu = torch.clamp(cos_zu, min=0.0, max=1.0)
-                                # 추가
-                                # cos_zu = torch.exp((cos_zu-1.0) / tau)  # Sharpening with tau
-                                # print('mean cos_zu:', cos_zu)
 
-                                # Removal strength
                                 prior_val = 0.0 if prior is None else float(prior)
                                 alpha = prior_val * cos_zu                                     # (N,)
 
-                                # Remove only the component along u inside the subspace
                                 z_new = z - alpha.unsqueeze(-1) * proj_vec                      # (N, k)
 
-                                # Reconstruct back to D while preserving orthogonal complement
                                 delta_sub_old = z @ Vt.T                                        # (N, D)
                                 delta_sub_new = z_new @ Vt.T                                    # (N, D)
                                 delta_new = delta_sub_new + (delta - delta_sub_old)             # (N, D)
-                                # 수정
-                                # delta_new = delta_sub_new
+
                                 H_masked_new = (mu.unsqueeze(0) + delta_new).to(H_full.dtype)   # (N, D)
-                                # # 추가
-                                # old_norm = torch.norm(H_masked, dim=-1, keepdim=True).to(H_full.dtype) 
-                                # new_norm = torch.norm(H_masked_new, dim=-1, keepdim=True).to(H_full.dtype) 
-                                # print('mean norm before/after prior proj:', old_norm.mean().item(), new_norm.mean().item())
-                                # H_masked_new = H_masked_new * (old_norm / (new_norm + 1e-6)).to(H_full.dtype) 
                                 #====
                                 H_full[masked_positions] = H_masked_new
                                 if hs:
                                     hs_list.append(H_full[-gen_length:, :].detach().cpu())
                         #====================#
-                        # debug용 추가
-                        # logits = self.lm_head(outputs[0]).float()
+
                         logits = self.lm_head(H_full.unsqueeze(0)).float()
                         if hs:
                             logit_list.append(logits[:,-gen_length:,:].detach().cpu())

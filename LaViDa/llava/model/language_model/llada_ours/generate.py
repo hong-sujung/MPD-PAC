@@ -135,7 +135,7 @@ def init_prior_lastlayer_subspace_from_32layers(model, k=3):
 
     with torch.no_grad():
         out = model(
-            input_ids=dummy,                         # ✅ 추가!
+            input_ids=dummy,                         
             input_embeddings=inputs_embeds,
             attention_mask=attention_mask,
             output_hidden_states=True,
@@ -250,26 +250,19 @@ def generate(model, prompt=None, steps=None, max_new_tokens=128, block_length=12
     if step_per_block:
         steps = min(step_per_block,block_length)
         assert step_ratio is None, 'Please do not pass both step_ratio and step_per_block'
-    # step_ratio = 0.5
-    # schedule = 'shift'
-    # schedule_kwargs = dict(shift=3)
-    # breakpoint()
+
     if step_ratio:
         steps = int(steps*step_ratio)
 
-    # print(steps,step_per_block,block_length,draft_tokens.shape[-1])
-    # NFE = 0
+
     if verbose:
         history = []
     st = 0
     transfer_ids=[]
 
     if hs:
-        # before_hs=[]
-        # after_hs=[]
         hs_list = []
         transfer_ids=[]
-    # all_attentions = [] if collect_attn else None
 
     for num_block in range(num_blocks):
         block_mask_index = (x[:, prompt.shape[1] + num_block * block_length: prompt.shape[1] + (num_block + 1) * block_length:] == mask_id)
@@ -296,11 +289,7 @@ def generate(model, prompt=None, steps=None, max_new_tokens=128, block_length=12
                 logits = un_logits + (cfg_scale + 1) * (logits - un_logits)
             else:
                 inputs_embeds_curr = model.transformer.wte(x)
-                #print(tokenizer.batch_decode(x)[0].replace('<|endoftext|>',''))
-                # print((x==mask_id).sum())
-                # breakpoint()
                 if prefix_lm:
-                    # breakpoint()
                     outputs = model(
                         None,
                         input_embeddings=inputs_embeds_curr,
@@ -326,87 +315,44 @@ def generate(model, prompt=None, steps=None, max_new_tokens=128, block_length=12
                         # return_dict=True,
                     )
         
-                # 추가 ===============
                 init_prior_lastlayer_subspace_from_32layers(model,k=k)
 
-                # prior 통계는 CPU에 캐시해 두었으므로,
-                # 실제 hidden state가 위치한 디바이스로 이동해서 사용한다.
-                H_full = outputs.hidden_states[-1]  # (B=1, L, D)
-                # 변경
-                # H_full = outputs.last_hidden_state
-                mu = model.prior_mu.to(H_full.device)   # (D,)
-                Vt = model.prior_Vt.to(H_full.device)   # (D, k)
-                u  = model.prior_u.to(H_full.device)    # (k,)
+
+                H_full = outputs.hidden_states[-1]  
+                mu = model.prior_mu.to(H_full.device)   
+                Vt = model.prior_Vt.to(H_full.device)   
+                u  = model.prior_u.to(H_full.device)   
                 
-                # # collect per-step, per-layer attention weights when requested
-                # if collect_attn and getattr(outputs, "attn_weights", None) is not None:
-                #     all_attentions.append(outputs.attn_weights)
 
                 masked_positions = mask_index[0].to(H_full.device)
                 if masked_positions.any():
-                    H_masked = H_full[0,masked_positions]              # (N, D)
+                    H_masked = H_full[0,masked_positions]             
+                    delta = (H_masked - mu.unsqueeze(0)).float()     
+                    z = delta @ Vt                                   
 
-                    # Center
-                    delta = (H_masked - mu.unsqueeze(0)).float()     # (N, D)
+                    proj_scalar = (z * u.unsqueeze(0)).sum(dim=-1, keepdim=True)   
+                    proj_vec = proj_scalar * u.unsqueeze(0)                       
 
-                    # Map to subspace: z in R^k
-                    z = delta @ Vt                                   # (N, k)
-
-                    # Project z onto prior-last direction u (1D)
-                    # proj_scalar = <z, u>
-                    proj_scalar = (z * u.unsqueeze(0)).sum(dim=-1, keepdim=True)   # (N, 1)
-                    proj_vec = proj_scalar * u.unsqueeze(0)                        # (N, k)
-
-                    # Cosine alignment cos(z, u) = <z,u> / ||z||
                     z_norm = torch.norm(z, dim=-1, keepdim=True) + 1e-6
-                    cos_zu = (proj_scalar / z_norm).squeeze(-1)                    # (N,)
-                    cos_zu = torch.clamp(cos_zu, min=0.0, max=1.0)                 # safety
-                    # cos_zu = torch.exp((cos_zu - 1.0))
-                    # print(cos_zu)
-                    # Removal strength (your "prior" hyperparam)
-                    # alpha_i in [0, prior]
-                    alpha = prior * cos_zu                                         # (N,)
+                    cos_zu = (proj_scalar / z_norm).squeeze(-1)                   
+                    cos_zu = torch.clamp(cos_zu, min=0.0, max=1.0)                 
 
-                    # Remove only the component along u inside the subspace
-                    z_new = z - alpha.unsqueeze(-1) * proj_vec                      # (N, k)
+                    alpha = prior * cos_zu                                        
 
-                    # Reconstruct back to D while preserving orthogonal complement:
-                    # delta = delta_sub + delta_orth
+                    z_new = z - alpha.unsqueeze(-1) * proj_vec                      
+
                     delta_sub_old = z @ Vt.T
                     delta_sub_new = z_new @ Vt.T
-                    delta_new = delta_sub_new + (delta - delta_sub_old)       # (N, D)
+                    delta_new = delta_sub_new + (delta - delta_sub_old)       
 
-                    H_masked_new = (mu.unsqueeze(0) + delta_new).to(H_full.dtype)     # (N, D)
+                    H_masked_new = (mu.unsqueeze(0) + delta_new).to(H_full.dtype)     
                     H_full[0,masked_positions] = H_masked_new
-                    # if hs:
-                    #     after_hs.append(H_full.clone().cpu())
                     if hs:
-                        # before_hs.append(H_full.clone().cpu())
                         hs_list.append(H_full[:,-gen_length:,:].clone().cpu())
-                # 마지막 FF 레이어 weight가 다른 GPU에 있을 수 있으므로,
-                # 현재 hidden state와 동일한 디바이스로 복사해서 matmul 수행
+
                 ff_weight = model.transformer.ff_out.weight.to(H_full.device)
                 logits = H_full @ ff_weight.t()
-                #====#
-                # save_qk 옵션이 True일 때만 attention 저장
-                if getattr(model.config, "save_qk", False):
-                    base_dir = getattr(model.config, "qk_save_dir", None)
-                    # base_dir = f"/nfs/data/noonddudung2/attn_0115_lavida_ours/{img_id}_step_{step_per_block}_bl_{block_length}"
-                    step_dir = os.path.join(base_dir, f"attention_step_{st}")
-                    try:
-                        os.makedirs(step_dir, exist_ok=True)
-                        if getattr(outputs, "attentions", None) is not None:
-                            for k, attn in enumerate(outputs.attentions):
-                                try:
-                                    torch.save(
-                                        attn.detach().cpu().to(torch.float16),
-                                        os.path.join(step_dir, f"layer_{k}_attn.pt"),
-                                    )
-                                except Exception:
-                                    pass
-                    except Exception:
-                        pass
-                st += 1
+              
             # logits = logits.cpu()
             logits_with_noise = add_gumbel_noise(logits, temperature=temperature)
             x0 = torch.argmax(logits_with_noise, dim=-1) # b, l
@@ -450,11 +396,9 @@ def generate(model, prompt=None, steps=None, max_new_tokens=128, block_length=12
             x[transfer_index] = x0[transfer_index]
             if verbose:
                 history.append(x.clone().cpu())
-    # breakpoint()
-    # print(f"NFE: {NFE} Num Blocks: {num_blocks}")
+
     if verbose:
         return x, history
-    # When attn=True, return attentions as the last element.
     if hs:
         return x, transfer_ids, inputs_embeds.shape[1], hs_list
     return x 
@@ -467,7 +411,6 @@ def main():
 
     prompt = "Lily can run 12 kilometers per hour for 4 hours. After that, she runs 6 kilometers per hour. How many kilometers can she run in 8 hours?"
 
-    # Add special tokens for the Instruct model. The Base model does not require the following two lines.
     m = [{"role": "user", "content": prompt}, ]
     prompt = tokenizer.apply_chat_template(m, add_generation_prompt=True, tokenize=False)
 

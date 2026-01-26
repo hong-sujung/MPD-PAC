@@ -29,7 +29,7 @@ from transformers.generation.utils import GenerateOutput
 
 from llava.model.llava_arch import LlavaMetaModel, LlavaMetaForCausalLM
 from llava.model.language_model.configuration_llada import LLaDAConfig
-from llava.model.language_model.modeling_llada_hs import LLaDAModel, LLaDAModelLM # 변경
+from llava.model.language_model.modeling_llada_ours import LLaDAModel, LLaDAModelLM # 변경
 
 
 class LlavaLLaDAConfig(LLaDAConfig):

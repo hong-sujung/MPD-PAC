@@ -385,7 +385,6 @@ class RotaryEmbedding(nn.Module):
         self._qk_step: int = 0
         # Warm up cache.
         self.rope_theta = config.rope_theta
-        # 추가
         self.low_strength = 0.1
         self.get_rotary_embedding(config.max_sequence_length, _non_meta_init_device(config))
     
@@ -395,8 +394,7 @@ class RotaryEmbedding(nn.Module):
 
     def get_rotary_embedding(self, seq_len: int, device: torch.device, rope: float=0.0, mode:str="linear", slope=None, center=None) -> Tuple[torch.Tensor, torch.Tensor]:
         
-        # print('slope:',slope)
-        # 추가
+
         rope = float(rope)
         rope = max(0.0, min(1.0, rope))
 
@@ -426,7 +424,6 @@ class RotaryEmbedding(nn.Module):
             freqs = einsum("i , j -> i j", seq, inv_freq)
             positions = torch.cat((freqs, freqs), dim=-1)
 
-            # 추가
             if rope > 0.0:
                 scale_mask = self.make_monotonic_freq_mask(dim, device, rope, mode=mode, slope=slope, center=center).view(dim)  # (dim,)
                 positions = positions * scale_mask  # broadcast (seq_len, dim) * (dim,)
@@ -483,9 +480,7 @@ class RotaryEmbedding(nn.Module):
         return ((t * pos_cos) + (self.rotate_half(t) * pos_sin)).to(t.dtype)
 
     def forward(self, q: torch.Tensor, k: torch.Tensor, rope: Optional[float] = None, mode: str = "linear", slope=None, center=None) -> Tuple[torch.Tensor, torch.Tensor]:
-        # print("[DEBUG] RotaryEmbedding.forward called")
-        # print(f"[QK DEBUG] save_qk: {getattr(self.config, 'save_qk', None)}, qk_save_dir: {getattr(self.config, 'qk_save_dir', None)}")
-        # 추가
+
         rope_strength = 0.0 if rope is None else max(0.0, min(1.0, float(rope)))
 
         if self.config.rope_full_precision:
@@ -494,7 +489,7 @@ class RotaryEmbedding(nn.Module):
             q_, k_ = q, k
 
         with torch.autocast(q.device.type, enabled=False):
-            query_len, key_len = q_.shape[-2], k_.shape[-2]  # could be different if layer_past not None
+            query_len, key_len = q_.shape[-2], k_.shape[-2]  
             pos_sin, pos_cos = self.get_rotary_embedding(key_len, q_.device, rope_strength,mode=mode, slope=slope, center=center)
             pos_sin = pos_sin.type_as(q_)
             pos_cos = pos_cos.type_as(q_)
@@ -505,7 +500,6 @@ class RotaryEmbedding(nn.Module):
             )
             k_ = self.apply_rotary_pos_emb(pos_sin, pos_cos, k_)
 
-            # 추가
             if getattr(self.config, "save_qk", False):
                 save_dir = getattr(self.config, "qk_save_dir", "qk_final")
                 print(f"[QK DEBUG] save_qk: {self.config.save_qk}, qk_save_dir: {save_dir}")
