@@ -261,11 +261,11 @@ class LlavaLladaForMaskedDiffusion(LLaDAModelLM,LlavaMetaForCausalLM):
                 num_items_in_batch=num_items_in_batch,
             )
             # output['new_input_ids']=new_input_ids
-            output['new_input_ids'] = locals().get('new_input_ids', input_ids) # 수정
+            output['new_input_ids'] = locals().get('new_input_ids', input_ids) 
 
             output['labels'] = labels
             # output['final_masked_indices']=final_masked_indices
-            output['final_masked_indices'] = locals().get('final_masked_indices', torch.zeros_like(input_ids, dtype=torch.bool))# 수정
+            output['final_masked_indices'] = locals().get('final_masked_indices', torch.zeros_like(input_ids, dtype=torch.bool))
             output['p_mask'] = p_mask
             return output
 

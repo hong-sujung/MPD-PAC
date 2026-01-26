@@ -114,8 +114,6 @@ class LlavaLLaDAModelLM(LLaDAModelLM, LlavaMetaForCausalLM):
             return logits, labels
 
         else:
-            import sys
-            # sys.path.append('/nfs/home/noonddudung2/cvpr2026/LLaDA-V/train/')
             # from llava.constants import IGNORE_INDEX
             return super().forward(
                 input_ids=input_ids,

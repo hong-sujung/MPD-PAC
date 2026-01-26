@@ -274,7 +274,6 @@ def process_anyres_image(image, processor, grid_pinpoints):
         possible_resolutions = ast.literal_eval(grid_pinpoints)
     best_resolution = select_best_resolution(image.size, possible_resolutions)
     image_padded = resize_and_pad_image(image, best_resolution)
-    # 수정
     patches = divide_to_patches(image_padded, processor.crop_size["height"])
     # FIXME: this seems to be a bug that it resizes instead of pad.
     # but to keep it consistent with previous, i will keep it as it is
