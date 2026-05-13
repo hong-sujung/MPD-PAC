@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bar" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%"  stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"  stop-color="#0b0b1a"/>
+      <stop offset="100%" stop-color="#1a1a30"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded square background -->
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+
+  <!-- Subtle inner glow -->
+  <rect x="1" y="1" width="62" height="62" rx="13" fill="none" stroke="#6366f1" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- Ascending bars: baseline → ours -->
+  <rect x="10" y="40" width="9" height="14" rx="2" fill="url(#bar)" opacity="0.55"/>
+  <rect x="23" y="32" width="9" height="22" rx="2" fill="url(#bar)" opacity="0.75"/>
+  <rect x="36" y="22" width="9" height="32" rx="2" fill="url(#bar)" opacity="0.9"/>
+  <rect x="49" y="12" width="9" height="42" rx="2" fill="url(#bar)"/>
+
+  <!-- Trend dot at the top -->
+  <circle cx="53.5" cy="12" r="2.4" fill="#c4b5fd"/>
+</svg>
