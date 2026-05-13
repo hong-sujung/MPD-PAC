@@ -67,3 +67,21 @@ Thumbs.db
 *.synctex.gz
 *.fdb_latexmk
 *.fls
+
+
+# Claude Code internal notes
+CLAUDE.md
+.claude/
+
+# Draft paper PDFs in docs (keep the published site, ignore drafts)
+docs/*.pdf
+
+# Heavy artifacts inside model integration directories
+LLaDA-V/checkpoints/
+LLaDA-V/outputs/
+LLaDA-V/logs/
+LLaDA-V/wandb/
+LaViDa/checkpoints/
+LaViDa/outputs/
+LaViDa/logs/
+LaViDa/wandb/

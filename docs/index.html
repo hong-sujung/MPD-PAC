@@ -1,520 +1,827 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  <!-- Primary Meta Tags -->
-  <!-- TODO: Replace with your paper title and author names -->
-  <meta name="title" content="PAPER_TITLE - AUTHOR_NAMES">
-  <!-- TODO: Write a compelling 150-160 character description of your research -->
-  <meta name="description" content="BRIEF_DESCRIPTION_OF_YOUR_RESEARCH_CONTRIBUTION_AND_FINDINGS">
-  <!-- TODO: Add 5-10 relevant keywords for your research area -->
-  <meta name="keywords" content="KEYWORD1, KEYWORD2, KEYWORD3, machine learning, computer vision, AI">
-  <!-- TODO: List all authors -->
-  <meta name="author" content="FIRST_AUTHOR_NAME, SECOND_AUTHOR_NAME">
-  <meta name="robots" content="index, follow">
-  <meta name="language" content="English">
-  
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="article">
-  <!-- TODO: Replace with your institution or lab name -->
-  <meta property="og:site_name" content="INSTITUTION_OR_LAB_NAME">
-  <!-- TODO: Same as paper title above -->
-  <meta property="og:title" content="PAPER_TITLE">
-  <!-- TODO: Same as description above -->
-  <meta property="og:description" content="BRIEF_DESCRIPTION_OF_YOUR_RESEARCH_CONTRIBUTION_AND_FINDINGS">
-  <!-- TODO: Replace with your actual website URL -->
-  <meta property="og:url" content="https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE">
-  <!-- TODO: Create a 1200x630px preview image and update path -->
-  <meta property="og:image" content="https://YOUR_DOMAIN.com/static/images/social_preview.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="PAPER_TITLE - Research Preview">
-  <meta property="article:published_time" content="2024-01-01T00:00:00.000Z">
-  <meta property="article:author" content="FIRST_AUTHOR_NAME">
-  <meta property="article:section" content="Research">
-  <meta property="article:tag" content="KEYWORD1">
-  <meta property="article:tag" content="KEYWORD2">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image">
-  <!-- TODO: Replace with your lab/institution Twitter handle -->
-  <meta name="twitter:site" content="@YOUR_TWITTER_HANDLE">
-  <!-- TODO: Replace with first author's Twitter handle -->
-  <meta name="twitter:creator" content="@AUTHOR_TWITTER_HANDLE">
-  <!-- TODO: Same as paper title above -->
-  <meta name="twitter:title" content="PAPER_TITLE">
-  <!-- TODO: Same as description above -->
-  <meta name="twitter:description" content="BRIEF_DESCRIPTION_OF_YOUR_RESEARCH_CONTRIBUTION_AND_FINDINGS">
-  <!-- TODO: Same as social preview image above -->
-  <meta name="twitter:image" content="https://YOUR_DOMAIN.com/static/images/social_preview.png">
-  <meta name="twitter:image:alt" content="PAPER_TITLE - Research Preview">
+  <title>Mitigating Mask Prior Drift and Positional Attention Collapse in LDVLMs</title>
+  <meta name="description" content="Training-free inference-time mitigation of mask prior drift and positional attention collapse in large diffusion vision-language models. ICML 2026." />
+  <meta name="keywords" content="diffusion vision-language model, LDVLM, LLaDA-V, LaViDa, mask prior, RoPE, ICML 2026" />
 
-  <!-- Academic/Research Specific -->
-  <meta name="citation_title" content="PAPER_TITLE">
-  <meta name="citation_author" content="FIRST_AUTHOR_LAST, FIRST_AUTHOR_FIRST">
-  <meta name="citation_author" content="SECOND_AUTHOR_LAST, SECOND_AUTHOR_FIRST">
-  <meta name="citation_publication_date" content="2024">
-  <meta name="citation_conference_title" content="CONFERENCE_NAME">
-  <meta name="citation_pdf_url" content="https://YOUR_DOMAIN.com/static/pdfs/paper.pdf">
-  
-  <!-- Additional SEO -->
-  <meta name="theme-color" content="#2563eb">
-  <meta name="msapplication-TileColor" content="#2563eb">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  
-  <!-- Preconnect for performance -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://ajax.googleapis.com">
-  <link rel="preconnect" href="https://documentcloud.adobe.com">
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="Mitigating Mask Prior Drift and Positional Attention Collapse in LDVLMs" />
+  <meta property="og:description" content="Training-free inference-time methods — Mask Prior Suppression and Monotonic RoPE Scaling — for large diffusion VLMs." />
+  <meta property="og:image" content="static/images/method.png" />
+  <meta name="twitter:card" content="summary_large_image" />
 
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico" />
 
-  <!-- TODO: Replace with your paper title and authors -->
-  <title>PAPER_TITLE - AUTHOR_NAMES | Academic Research</title>
-  
-  <!-- Favicon and App Icons -->
-  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
-  <link rel="apple-touch-icon" href="static/images/favicon.ico">
-  
-  <!-- Critical CSS - Load synchronously -->
-  <link rel="stylesheet" href="static/css/bulma.min.css">
-  <link rel="stylesheet" href="static/css/index.css">
-  
-  <!-- Non-critical CSS - Load asynchronously -->
-  <link rel="preload" href="static/css/bulma-carousel.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" href="static/css/bulma-slider.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" href="static/css/fontawesome.all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  <link rel="preload" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-  
-  <!-- Fallback for browsers that don't support preload -->
-  <noscript>
-    <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
-    <link rel="stylesheet" href="static/css/bulma-slider.min.css">
-    <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  </noscript>
-  
-  <!-- Fonts - Optimized loading -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Defer non-critical JavaScript -->
-  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="https://documentcloud.adobe.com/view-sdk/main.js"></script>
-  <script defer src="static/js/fontawesome.all.min.js"></script>
-  <script defer src="static/js/bulma-carousel.min.js"></script>
-  <script defer src="static/js/bulma-slider.min.js"></script>
-  <script defer src="static/js/index.js"></script>
-  
-  <!-- Structured Data for Academic Papers -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "ScholarlyArticle",
-    "headline": "PAPER_TITLE",
-    "description": "BRIEF_DESCRIPTION_OF_YOUR_RESEARCH_CONTRIBUTION_AND_FINDINGS",
-    "author": [
-      {
-        "@type": "Person",
-        "name": "FIRST_AUTHOR_NAME",
-        "affiliation": {
-          "@type": "Organization",
-          "name": "INSTITUTION_NAME"
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- KaTeX for equation rendering -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" />
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          },
+          colors: {
+            ink: {
+              950: '#070713',
+              900: '#0b0b1a',
+              800: '#111127',
+              700: '#1a1a30',
+              600: '#262642',
+            },
+            indigo: {
+              350: '#8b8cff',
+            },
+          },
+          boxShadow: {
+            glow: '0 0 80px -10px rgba(99,102,241,0.55)',
+            'glow-sm': '0 0 30px -4px rgba(99,102,241,0.45)',
+          },
+          keyframes: {
+            'float-slow': {
+              '0%,100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-12px)' },
+            },
+            pulseGlow: {
+              '0%,100%': { opacity: '0.55' },
+              '50%': { opacity: '0.9' },
+            },
+          },
+          animation: {
+            'float-slow': 'float-slow 9s ease-in-out infinite',
+            'pulse-glow': 'pulseGlow 5s ease-in-out infinite',
+          },
+        },
       },
-      {
-        "@type": "Person",
-        "name": "SECOND_AUTHOR_NAME",
-        "affiliation": {
-          "@type": "Organization",
-          "name": "INSTITUTION_NAME"
-        }
-      }
-    ],
-    "datePublished": "2024-01-01",
-    "publisher": {
-      "@type": "Organization",
-      "name": "CONFERENCE_OR_JOURNAL_NAME"
-    },
-    "url": "https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE",
-    "image": "https://YOUR_DOMAIN.com/static/images/social_preview.png",
-    "keywords": ["KEYWORD1", "KEYWORD2", "KEYWORD3", "machine learning", "computer vision"],
-    "abstract": "FULL_ABSTRACT_TEXT_HERE",
-    "citation": "BIBTEX_CITATION_HERE",
-    "isAccessibleForFree": true,
-    "license": "https://creativecommons.org/licenses/by/4.0/",
-    "mainEntity": {
-      "@type": "WebPage",
-      "@id": "https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE"
-    },
-    "about": [
-      {
-        "@type": "Thing",
-        "name": "RESEARCH_AREA_1"
-      },
-      {
-        "@type": "Thing", 
-        "name": "RESEARCH_AREA_2"
-      }
-    ]
-  }
+    };
   </script>
-  
-  <!-- Website/Organization Structured Data -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "INSTITUTION_OR_LAB_NAME",
-    "url": "https://YOUR_INSTITUTION_WEBSITE.com",
-    "logo": "https://YOUR_DOMAIN.com/static/images/favicon.ico",
-    "sameAs": [
-      "https://twitter.com/YOUR_TWITTER_HANDLE",
-      "https://github.com/YOUR_GITHUB_USERNAME"
-    ]
-  }
-  </script>
+
+  <style>
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: #070713;
+      color: #e6e6f2;
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    /* dotted-grid background */
+    .bg-dots {
+      background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 22px 22px;
+      background-position: 0 0;
+    }
+    /* radial illumination behind hero */
+    .hero-illum::before {
+      content: "";
+      position: absolute;
+      inset: -20% -10% auto -10%;
+      height: 120%;
+      background:
+        radial-gradient(60% 50% at 50% 0%, rgba(99,102,241,0.35) 0%, rgba(99,102,241,0.0) 60%),
+        radial-gradient(40% 30% at 70% 20%, rgba(139,92,246,0.25) 0%, rgba(139,92,246,0.0) 60%),
+        radial-gradient(35% 25% at 20% 30%, rgba(56,189,248,0.18) 0%, rgba(56,189,248,0.0) 60%);
+      filter: blur(40px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    /* thin indigo gradient line under hero */
+    .divider-glow {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(139,140,255,0.6), transparent);
+    }
+    /* gradient text */
+    .text-gradient {
+      background: linear-gradient(180deg, #ffffff 0%, #c7c8ff 70%, #8b8cff 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    /* card border w/ subtle glow */
+    .glow-card {
+      background: linear-gradient(180deg, rgba(20,20,40,0.7), rgba(10,10,24,0.6));
+      border: 1px solid rgba(99,102,241,0.2);
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.05), 0 20px 80px -30px rgba(99,102,241,0.45);
+    }
+    .glow-card:hover { border-color: rgba(99,102,241,0.45); }
+    /* button shimmer */
+    .btn-primary {
+      background: linear-gradient(180deg, #6366f1 0%, #4f46e5 100%);
+      box-shadow: 0 10px 30px -10px rgba(99,102,241,0.7), inset 0 1px 0 rgba(255,255,255,0.25);
+    }
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.07); border-color: rgba(139,140,255,0.5); }
+    /* pre code styling */
+    pre.code {
+      background: #0a0a18;
+      border: 1px solid rgba(99,102,241,0.18);
+      border-radius: 12px;
+      padding: 18px 20px;
+      font-family: 'JetBrains Mono', ui-monospace, monospace;
+      font-size: 13px;
+      color: #d6d6ff;
+      overflow-x: auto;
+    }
+    /* scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+      will-change: opacity, transform;
+    }
+    .reveal.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+    /* result column cards */
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    /* large pill for section headers */
+    .pill-lg {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+  </style>
 </head>
-<body>
 
+<body class="bg-ink-950 text-slate-200">
 
-  <!-- Scroll to Top Button -->
-  <button class="scroll-to-top" onclick="scrollToTop()" title="Scroll to top" aria-label="Scroll to top">
-    <i class="fas fa-chevron-up"></i>
-  </button>
+  <!-- ===== Navigation ===== -->
+  <header class="fixed top-0 inset-x-0 z-40 backdrop-blur-md bg-ink-950/60 border-b border-white/5">
+    <div class="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-2 group">
+        <span class="inline-block w-2.5 h-2.5 rounded-full bg-indigo-400 shadow-glow-sm animate-pulse-glow"></span>
+        <span class="text-sm font-semibold tracking-wide text-white/90 group-hover:text-white">MPD &middot; PAC</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-7 text-sm text-slate-300">
+        <a href="#abstract" class="hover:text-white">Abstract</a>
+        <a href="#analysis" class="hover:text-white">Analysis</a>
+        <a href="#method" class="hover:text-white">Method</a>
+        <a href="#results" class="hover:text-white">Results</a>
+        <a href="#bibtex" class="hover:text-white">BibTeX</a>
+      </nav>
+      <a href="https://github.com/" target="_blank" rel="noopener"
+         class="text-xs font-semibold px-3 py-1.5 rounded-md btn-ghost text-white/90">
+        Code &nbsp;↗
+      </a>
+    </div>
+  </header>
 
-  <!-- More Works Dropdown -->
-  <div class="more-works-container">
-    <button class="more-works-btn" onclick="toggleMoreWorks()" title="View More Works from Our Lab">
-      <i class="fas fa-flask"></i>
-      More Works
-      <i class="fas fa-chevron-down dropdown-arrow"></i>
-    </button>
-    <div class="more-works-dropdown" id="moreWorksDropdown">
-      <div class="dropdown-header">
-        <h4>More Works from Our Lab</h4>
-        <button class="close-btn" onclick="toggleMoreWorks()">
-          <i class="fas fa-times"></i>
-        </button>
+  <!-- ===== Hero ===== -->
+  <section id="top" class="relative hero-illum overflow-hidden">
+    <div class="absolute inset-0 bg-dots opacity-60"></div>
+    <div class="relative max-w-5xl mx-auto px-6 pt-36 pb-24 text-center">
+      <!-- <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-xs font-medium text-indigo-200 mb-7">
+        <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+        ICML 2026 &nbsp;·&nbsp; Training-free inference-time method
+      </div> -->
+
+      <h1 class="text-gradient font-extrabold tracking-tight text-3xl sm:text-4xl md:text-5xl" style="line-height: 1.2;">
+        Mitigating Mask Prior Drift and<br />
+        Positional Attention Collapse<br />
+        <span class="text-white/90">in Large Diffusion VLMs</span>
+      </h1>
+
+      <p class="mt-8 text-base sm:text-sm text-slate-300/90 max-w-3xl mx-auto">
+        A training-free, inference-time approach pairing
+        <span class="text-indigo-300 font-semibold">Mask Prior Suppression</span>
+        with
+        <span class="text-indigo-300 font-semibold">Monotonic RoPE Scaling</span>
+        to fix repetitive generation and degraded visual grounding in large diffusion vision–language models.
+      </p>
+
+      <!-- Authors -->
+      <div class="mt-10 text-sm sm:text-base text-slate-300">
+        <div class="flex flex-wrap justify-center gap-x-4 gap-y-1">
+          <span><a href="#" class="hover:text-white">Sujung Hong</a></span>
+          <span><a href="#" class="hover:text-white">Chanyong Yoon</a></span>
+          <span><a href="#" class="hover:text-white">Seongjae Hwang</a></span>
+        </div>
+        <div class="mt-2 text-slate-400 text-sm">Yonsei University &nbsp;·&nbsp; ICML 2026</div>
       </div>
-      <div class="works-list">
-        <!-- TODO: Replace with your lab's related works -->
-        <a href="https://arxiv.org/abs/PAPER_ID_1" class="work-item" target="_blank">
-          <div class="work-info">
-            <!-- TODO: Replace with actual paper title -->
-            <h5>Paper Title 1</h5>
-            <!-- TODO: Replace with brief description -->
-            <p>Brief description of the work and its main contribution.</p>
-            <!-- TODO: Replace with venue and year -->
-            <span class="work-venue">Conference/Journal 2024</span>
-          </div>
-          <i class="fas fa-external-link-alt"></i>
+
+      <!-- Buttons -->
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        <a href="#" class="btn-primary text-white font-semibold rounded-lg px-5 py-2.5 text-sm inline-flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm-1 7V3.5L18.5 9H13Z"/></svg>
+          Paper
         </a>
-        <!-- TODO: Add more related works or remove extra items -->
-        <a href="https://arxiv.org/abs/PAPER_ID_2" class="work-item" target="_blank">
-          <div class="work-info">
-            <h5>Paper Title 2</h5>
-            <p>Brief description of the work and its main contribution.</p>
-            <span class="work-venue">Conference/Journal 2023</span>
-          </div>
-          <i class="fas fa-external-link-alt"></i>
+        <a href="#" class="btn-ghost text-white/90 font-semibold rounded-lg px-5 py-2.5 text-sm inline-flex items-center gap-2">
+          arXiv
+          <span class="text-indigo-300">↗</span>
         </a>
-        <a href="https://arxiv.org/abs/PAPER_ID_3" class="work-item" target="_blank">
-          <div class="work-info">
-            <h5>Paper Title 3</h5>
-            <p>Brief description of the work and its main contribution.</p>
-            <span class="work-venue">Conference/Journal 2023</span>
-          </div>
-          <i class="fas fa-external-link-alt"></i>
+        <a href="https://github.com/" target="_blank" rel="noopener"
+           class="btn-ghost text-white/90 font-semibold rounded-lg px-5 py-2.5 text-sm inline-flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.69 1.24 3.34.95.1-.74.4-1.24.72-1.53-2.55-.29-5.24-1.28-5.24-5.71 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.47.11-3.07 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.6.23 2.78.11 3.07.73.81 1.18 1.84 1.18 3.1 0 4.44-2.69 5.42-5.25 5.71.41.35.78 1.05.78 2.12v3.14c0 .31.21.67.79.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"/></svg>
+          Code
+        </a>
+        <a href="#" class="btn-ghost text-white/90 font-semibold rounded-lg px-5 py-2.5 text-sm inline-flex items-center gap-2">
+          BibTeX
         </a>
       </div>
-    </div>
-  </div>
-
-  <main id="main-content">
-  <section class="hero">
-    <div class="hero-body">
-      <div class="container is-max-desktop">
-        <div class="columns is-centered">
-          <div class="column has-text-centered">
-            <!-- TODO: Replace with your paper title -->
-            <h1 class="title is-1 publication-title">Academic Project Page</h1>
-            <div class="is-size-5 publication-authors">
-              <!-- TODO: Replace with your paper authors and their personal links -->
-              <span class="author-block">
-                <a href="FIRST AUTHOR PERSONAL LINK" target="_blank">First Author</a><sup>*</sup>,</span>
-                <span class="author-block">
-                  <a href="SECOND AUTHOR PERSONAL LINK" target="_blank">Second Author</a><sup>*</sup>,</span>
-                  <span class="author-block">
-                    <a href="THIRD AUTHOR PERSONAL LINK" target="_blank">Third Author</a>
-                  </span>
-                  </div>
-
-                  <div class="is-size-5 publication-authors">
-                    <!-- TODO: Replace with your institution and conference/journal info -->
-                    <span class="author-block">Institution Name<br>Conference name and year</span>
-                    <!-- TODO: Remove this line if no equal contribution -->
-                    <span class="eql-cntrb"><small><br><sup>*</sup>Indicates Equal Contribution</small></span>
-                  </div>
-
-                  <div class="column has-text-centered">
-                    <div class="publication-links">
-                         <!-- TODO: Update with your arXiv paper ID -->
-                      <span class="link-block">
-                        <a href="https://arxiv.org/pdf/<ARXIV PAPER ID>.pdf" target="_blank"
-                        class="external-link button is-normal is-rounded is-dark">
-                        <span class="icon">
-                          <i class="fas fa-file-pdf"></i>
-                        </span>
-                        <span>Paper</span>
-                      </a>
-                    </span>
-
-                    <!-- TODO: Add your supplementary material PDF or remove this section -->
-                    <span class="link-block">
-                      <a href="static/pdfs/supplementary_material.pdf" target="_blank"
-                      class="external-link button is-normal is-rounded is-dark">
-                      <span class="icon">
-                        <i class="fas fa-file-pdf"></i>
-                      </span>
-                      <span>Supplementary</span>
-                    </a>
-                  </span>
-
-                  <!-- TODO: Replace with your GitHub repository URL -->
-                  <span class="link-block">
-                    <a href="https://github.com/YOUR REPO HERE" target="_blank"
-                    class="external-link button is-normal is-rounded is-dark">
-                    <span class="icon">
-                      <i class="fab fa-github"></i>
-                    </span>
-                    <span>Code</span>
-                  </a>
-                </span>
-
-                <!-- TODO: Update with your arXiv paper ID -->
-                <span class="link-block">
-                  <a href="https://arxiv.org/abs/<ARXIV PAPER ID>" target="_blank"
-                  class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                    <i class="ai ai-arxiv"></i>
-                  </span>
-                  <span>arXiv</span>
-                </a>
-              </span>
-            </div>
-          </div>
+      <!-- floating teaser graphic
+      <div class="mt-16 relative">
+        <div class="absolute inset-x-10 -bottom-6 h-12 blur-2xl rounded-full bg-indigo-500/30"></div>
+        <div class="glow-card rounded-2xl p-3 sm:p-4 animate-float-slow" style="background: #191625;">
+          <img src="static/images/method.png" alt="Method overview"
+               class="w-full rounded-xl block" style="background: #191625;"/>
         </div>
       </div>
+      -->
     </div>
-  </div>
-</section>
 
+    <div class="divider-glow"></div>
+  </section>
 
-<!-- Teaser video-->
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <!-- TODO: Replace with your teaser video -->
-      <video poster="" id="tree" autoplay controls muted loop height="100%" preload="metadata">
-        <!-- TODO: Add your video file path here -->
-        <source src="static/videos/banner_video.mp4" type="video/mp4">
-      </video>
-      <!-- TODO: Replace with your video description -->
-      <h2 class="subtitle has-text-centered">
-        Aliquam vitae elit ullamcorper tellus egestas pellentesque. Ut lacus tellus, maximus vel lectus at, placerat pretium mi. Maecenas dignissim tincidunt vestibulum. Sed consequat hendrerit nisl ut maximus. 
-      </h2>
-    </div>
-  </div>
-</section>
-<!-- End teaser video -->
-
-<!-- Paper abstract -->
-<section class="section hero is-light">
-  <div class="container is-max-desktop">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3">Abstract</h2>
-        <div class="content has-text-justified">
-          <!-- TODO: Replace with your paper abstract -->
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin ullamcorper tellus sed ante aliquam tempus. Etiam porttitor urna feugiat nibh elementum, et tempor dolor mattis. Donec accumsan enim augue, a vulputate nisi sodales sit amet. Proin bibendum ex eget mauris cursus euismod nec et nibh. Maecenas ac gravida ante, nec cursus dui. Vivamus purus nibh, placerat ac purus eget, sagittis vestibulum metus. Sed vestibulum bibendum lectus gravida commodo. Pellentesque auctor leo vitae sagittis suscipit.
-          </p>
-        </div>
+  <!-- ===== Abstract ===== -->
+  <section id="abstract" class="relative py-24">
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-10">
+        <span class="pill-lg bg-indigo-500/10 text-indigo-300 border border-indigo-400/20">Abstract</span>
+        <!-- <h2 class="mt-4 text-4xl sm:text-5xl font-bold text-white">What and why</h2> -->
       </div>
-    </div>
-  </div>
-</section>
-<!-- End paper abstract -->
-
-
-<!-- Image carousel -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container">
-      <div id="results-carousel" class="carousel results-carousel">
-       <div class="item">
-        <!-- TODO: Replace with your research result images -->
-        <img src="static/images/carousel1.jpg" alt="First research result visualization" loading="lazy"/>
-        <!-- TODO: Replace with description of this result -->
-        <h2 class="subtitle has-text-centered">
-          First image description.
-        </h2>
-      </div>
-      <div class="item">
-        <!-- Your image here -->
-        <img src="static/images/carousel2.jpg" alt="Second research result visualization" loading="lazy"/>
-        <h2 class="subtitle has-text-centered">
-          Second image description.
-        </h2>
-      </div>
-      <div class="item">
-        <!-- Your image here -->
-        <img src="static/images/carousel3.jpg" alt="Third research result visualization" loading="lazy"/>
-        <h2 class="subtitle has-text-centered">
-         Third image description.
-       </h2>
-     </div>
-     <div class="item">
-      <!-- Your image here -->
-      <img src="static/images/carousel4.jpg" alt="Fourth research result visualization" loading="lazy"/>
-      <h2 class="subtitle has-text-centered">
-        Fourth image description.
-      </h2>
-    </div>
-  </div>
-</div>
-</div>
-</section>
-<!-- End image carousel -->
-
-
-
-
-<!-- Youtube video -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container">
-      <!-- Paper video. -->
-      <h2 class="title is-3">Video Presentation</h2>
-      <div class="columns is-centered has-text-centered">
-        <div class="column is-four-fifths">
-          
-          <div class="publication-video">
-            <!-- TODO: Replace with your YouTube video ID -->
-            <iframe src="https://www.youtube.com/embed/JkaxUblCGz0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End youtube video -->
-
-
-<!-- Video carousel -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title is-3">Another Carousel</h2>
-      <div id="results-carousel" class="carousel results-carousel">
-        <div class="item item-video1">
-          <!-- TODO: Add poster image for better preview -->
-          <video poster="" id="video1" controls muted loop height="100%" preload="metadata">
-            <!-- Your video file here -->
-            <source src="static/videos/carousel1.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-video2">
-          <!-- TODO: Add poster image for better preview -->
-          <video poster="" id="video2" controls muted loop height="100%" preload="metadata">
-            <!-- Your video file here -->
-            <source src="static/videos/carousel2.mp4" type="video/mp4">
-          </video>
-        </div>
-        <div class="item item-video3">
-          <!-- TODO: Add poster image for better preview -->
-          <video poster="" id="video3" controls muted loop height="100%" preload="metadata">
-            <!-- Your video file here -->
-            <source src="static/videos/carousel3.mp4" type="video/mp4">
-          </video>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End video carousel -->
-
-
-
-
-
-
-<!-- Paper poster -->
-<section class="hero is-small is-light">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title">Poster</h2>
-
-      <!-- TODO: Replace with your poster PDF -->
-      <iframe  src="static/pdfs/sample.pdf" width="100%" height="550">
-          </iframe>
-        
+      <div class="glow-card rounded-2xl p-8 sm:p-10 text-slate-300 leading-relaxed text-[15.5px]">
+        <p>
+          Large diffusion vision–language models (LDVLMs) enable parallel decoding and bidirectional
+          attention, yet their behavior under long-form generation remains underexplored. We show
+          that existing LDVLMs suffer from
+          <span class="text-white font-medium">repetitive generation</span> and
+          <span class="text-white font-medium">degraded visual grounding</span>, driven by two
+          causes: a <span class="text-white font-medium">mask token prior</span> that pulls hidden
+          representations toward a shared direction over generation steps, and a misalignment
+          between the <span class="text-white font-medium">positional attention bias</span> and the
+          iterative unmasking process that suppresses attention to informative visual tokens.
+        </p>
+        <p class="mt-4">
+          We propose a training-free approach,
+          <span class="text-indigo-300 font-semibold">Mask Prior Suppression</span> and
+          <span class="text-indigo-300 font-semibold">Monotonic RoPE Scaling</span>, that mitigates
+          mask prior drift and positional attention collapse during decoding. Experiments on
+          multimodal benchmarks and visual grounding tasks show consistent gains over baselines,
+          with robust improvements on long-form description — all from a lightweight,
+          <span class="text-white font-medium">plug-and-play</span> strategy that requires no
+          additional training and generalizes across diverse LDVLM architectures.
+        </p>
       </div>
     </div>
   </section>
-<!--End paper poster -->
 
-
-
-<!--BibTex citation -->
-  <section class="section" id="BibTeX">
-    <div class="container is-max-desktop content">
-      <div class="bibtex-header">
-        <h2 class="title">BibTeX</h2>
-        <button class="copy-bibtex-btn" onclick="copyBibTeX()" title="Copy BibTeX to clipboard">
-          <i class="fas fa-copy"></i>
-          <span class="copy-text">Copy</span>
-        </button>
+  <!-- ===== Analysis / Motivation ===== -->
+  <section id="analysis" class="relative py-24 border-t border-white/5">
+    <div class="absolute inset-x-0 top-0 h-px divider-glow"></div>
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-14">
+        <span class="pill-lg bg-indigo-500/10 text-indigo-300 border border-indigo-400/20">Analysis</span>
+        <h2 class="mt-5 text-4xl sm:text-5xl font-bold text-white">Where do LDVLMs fail?</h2>
+        <p class="mt-4 text-base text-slate-400 max-w-2xl mx-auto">
+          Before fixing anything, we measure two concrete failure modes inside LLaDA-V and LaViDa:
+          mask prior drift and positional attention collapse.
+        </p>
       </div>
-      <pre id="bibtex-code"><code>@article{YourPaperKey2024,
-  title={Your Paper Title Here},
-  author={First Author and Second Author and Third Author},
-  journal={Conference/Journal Name},
-  year={2024},
-  url={https://your-domain.com/your-project-page}
-}</code></pre>
-    </div>
-</section>
-<!--End BibTex citation -->
 
+      <!-- Failure 1: Mask Prior Drift -->
+      <div class="glow-card rounded-2xl p-6 sm:p-8 mb-8">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="pill bg-rose-500/10 text-rose-300 border border-rose-400/20">Failure&nbsp;1</span>
+          <h3 class="text-xl sm:text-2xl font-semibold text-white">Hidden states drift toward a shared mask prior</h3>
+        </div>
+        <div class="grid md:grid-cols-5 gap-6 items-center">
+          <div class="md:col-span-3 rounded-xl border border-white/10 bg-ink-900/40 p-3">
+            <img src="static/images/figure2.png" alt="Figure 2 — token repetition and mask prior drift"
+                 class="w-full rounded-lg block bg-white" />
+            <p class="text-center text-xs text-slate-500 mt-3">
+              Figure&nbsp;2. (a) Fewer generation steps → lower distinct-n and higher repetition.
+              (b) 3D PCA trajectories: vocab-mean and uncontextualized mask token converge in the final layer.
+              (c) Contextualized mask tokens align with the vocab mean far more strongly than random embeddings.
+            </p>
+          </div>
+          <div class="md:col-span-2 text-slate-300 text-sm leading-relaxed space-y-3">
+            <p>
+              Across generation steps, the hidden states of <span class="text-white font-medium">contextualized
+              mask tokens</span> are pulled toward the <span class="text-white font-medium">mean vocabulary
+              direction</span> in the final layer.
+            </p>
+            <p>
+              The fewer the unmasking steps, the stronger the collapse — and the more the model emits
+              <span class="text-white font-medium">structured repetitions</span> instead of diverse text.
+            </p>
+            <p class="text-slate-400">
+              This motivates <span class="text-indigo-300 font-semibold">Mask Prior Suppression</span>: remove
+              the prior direction from the final hidden state before the LM head.
+            </p>
+          </div>
+        </div>
+      </div>
 
-  <footer class="footer">
-  <div class="container">
-    <div class="columns is-centered">
-      <div class="column is-8">
-        <div class="content">
-
-          <p>
-            This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a> which was adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
-            You are free to borrow the source code of this website, we just ask that you link back to this page in the footer. <br> This website is licensed under a <a rel="license"  href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
-            Commons Attribution-ShareAlike 4.0 International License</a>.
-          </p>
-
+      <!-- Failure 2: Positional Attention Collapse -->
+      <div class="glow-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="pill bg-rose-500/10 text-rose-300 border border-rose-400/20">Failure&nbsp;2</span>
+          <h3 class="text-xl sm:text-2xl font-semibold text-white">Attention collapses onto nearby mask tokens</h3>
+        </div>
+        <div class="grid md:grid-cols-5 gap-6 items-center">
+          <div class="md:col-span-2 order-2 md:order-1 text-slate-300 text-sm leading-relaxed space-y-3">
+            <p>
+              Generation tokens disproportionately attend to <span class="text-white font-medium">nearby
+              mask tokens</span> with little semantic content, while attention to
+              <span class="text-white font-medium">distant visual tokens</span> decays sharply with distance.
+            </p>
+            <p>
+              A frequency decomposition reveals the cause: high-frequency RoPE dimensions dominate at short
+              range, low-frequency ones carry long-range interactions — but the overall attention to far visual
+              tokens stays weak.
+            </p>
+            <p class="text-slate-400">
+              This motivates <span class="text-indigo-300 font-semibold">Monotonic RoPE Scaling</span>: lift
+              low-frequency components more strongly than high-frequency ones to restore long-range visual
+              attention.
+            </p>
+          </div>
+          <div class="md:col-span-3 order-1 md:order-2 rounded-xl border border-white/10 bg-ink-900/40 p-3">
+            <img src="static/images/figure3.png" alt="Figure 3 — positional attention collapse"
+                 class="w-full rounded-lg block bg-white" />
+            <p class="text-center text-xs text-slate-500 mt-3">
+              Figure&nbsp;3. (a) Attention vs. relative distance — mask tokens are over-attended, visual tokens
+              decay quickly. (b) Per-step attention summed over visual vs. mask tokens — mask tokens absorb
+              comparable mass throughout decoding. (c) Frequency-wise decomposition: high-freq dominates short
+              range, low-freq long range; overall long-range attention is still weak.
+            </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</footer>
+  </section>
 
-<!-- Statcounter tracking code -->
-  
-<!-- You can add a tracker to track page visits by creating an account at statcounter.com -->
+  <!-- ===== Method ===== -->
+  <section id="method" class="relative py-24 border-t border-white/5">
+    <div class="absolute inset-x-0 top-0 h-px divider-glow"></div>
+    <div class="max-w-6xl mx-auto px-6">
 
-    <!-- End of Statcounter Code -->
+      <div class="text-center mb-14">
+        <span class="pill-lg bg-indigo-500/10 text-indigo-300 border border-indigo-400/20">Method</span>
+        <h2 class="mt-5 text-4xl sm:text-5xl font-bold text-white">Two inference-time fixes</h2>
+        <p class="mt-4 text-base text-slate-400 max-w-2xl mx-auto">
+          Both interventions are plug-in: no retraining, no fine-tuning, no extra parameters.
+        </p>
+      </div>
 
-  </body>
-  </html>
+      <!-- overview figure -->
+      <div class="glow-card rounded-2xl p-4 sm:p-6 mb-14">
+        <img src="static/images/method.png" alt="Method overview diagram"
+             class="w-full rounded-xl block" />
+        <p class="text-center text-xs text-slate-500 mt-4">
+          Figure&nbsp;1. End-to-end view of Mask Prior Suppression and Monotonic RoPE Scaling.
+        </p>
+      </div>
+
+      <!-- two cards -->
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="glow-card rounded-2xl p-7">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-9 h-9 rounded-lg bg-indigo-500/15 border border-indigo-400/30 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12h18M3 6h18M3 18h12"/></svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white">Mask Prior Suppression</h3>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Mask token hidden states drift toward a shared prior — the vocabulary-mean
+            direction — driving repetitive generation. We forward the mean embedding
+            through the network, run PCA on the layer-wise means to obtain a low-rank
+            prior subspace, and at the final layer project each token's deviation onto
+            this subspace and suppress it adaptively by cosine similarity. Only ~0.07%
+            of the final-layer dimensions are touched, preserving semantics.
+          </p>
+          <div class="mt-5 rounded-lg border border-white/10 bg-ink-900/60 px-4 py-3 text-center text-[15px] text-slate-100 overflow-x-auto">
+            $\tilde{h}_L^{e_j} = h_L^{e_j} \;-\; \lambda\,\cos(\theta_j)\;\mathbf{U}\mathbf{U}^{\!\top}\!\bigl(h_L^{e_j} - \mu\bigr)$
+          </div>
+          <div class="mt-5 flex flex-wrap gap-2 text-[11px] text-slate-400">
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">Mean-embedding PCA</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">Final layer only</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">~0.07% of dims</span>
+          </div>
+        </div>
+
+        <div class="glow-card rounded-2xl p-7">
+          <div class="flex items-center gap-3 mb-3">
+            <div class="w-9 h-9 rounded-lg bg-indigo-500/15 border border-indigo-400/30 flex items-center justify-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12c4 0 4-6 8-6s4 6 8 6"/></svg>
+            </div>
+            <h3 class="text-lg font-semibold text-white">Monotonic RoPE Scaling</h3>
+          </div>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            High-frequency RoPE components concentrate attention on nearby mask tokens,
+            while distant visual tokens — carried by low-frequency components — are
+            under-attended. We apply a sigmoid-gated, frequency-aware scaling that boosts
+            lower-frequency components more strongly than higher ones, lifting long-range
+            attention to visual tokens while preserving RoPE's relative-distance structure.
+          </p>
+          <div class="mt-5 rounded-lg border border-white/10 bg-ink-900/60 px-4 py-3 text-center text-[15px] text-slate-100 overflow-x-auto">
+            $s_i = 1 + \beta\,\sigma\!\bigl(\eta(\tau_i - \tau_0)\bigr),\quad \tau_i = \tfrac{i}{d/2 - 1}$
+          </div>
+          <div class="mt-5 flex flex-wrap gap-2 text-[11px] text-slate-400">
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">Sigmoid gate</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">Low-freq emphasis</span>
+            <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10">Preserves relative pos.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- usage code -->
+      <!-- <div class="mt-14">
+        <h3 class="text-base font-semibold text-white mb-3">Inference, one call</h3>
+        <pre class="code"><code>model.generate(
+    input_ids, images=image_tensor, image_sizes=image_sizes,
+    steps=16, gen_length=64, block_length=64,
+    <span style="color:#a5b4fc">prior</span>=0.1,        <span style="color:#64748b"># Mask Prior Suppression strength</span>
+    <span style="color:#a5b4fc">rope</span>=0.1,         <span style="color:#64748b"># Monotonic RoPE Scaling strength</span>
+    <span style="color:#a5b4fc">mode</span>=<span style="color:#fda4af">"sigmoid"</span>, slope=8.0, center=0.6,
+)</code></pre>
+      </div> -->
+
+    </div>
+  </section>
+
+  <!-- ===== Results ===== -->
+  <section id="results" class="relative py-24 border-t border-white/5">
+    <div class="absolute inset-x-0 top-0 h-px divider-glow"></div>
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="text-center mb-14">
+        <span class="pill-lg bg-indigo-500/10 text-indigo-300 border border-indigo-400/20">Results</span>
+        <h2 class="mt-5 text-4xl sm:text-5xl font-bold text-white">Baseline vs. Ours</h2>
+        <p class="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">
+          Consistent gains across nine benchmarks on both LLaDA-V and LaViDa, with the largest
+          improvements on visual grounding and long-form generation.
+        </p>
+      </div>
+
+      <!-- Quantitative table -->
+      <div class="glow-card rounded-2xl p-6 sm:p-8 mb-10 overflow-x-auto">
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-lg font-semibold text-white">Main results across nine benchmarks</h3>
+          <span class="pill bg-indigo-500/10 text-indigo-300 border border-indigo-400/20">quantitative</span>
+        </div>
+        <table class="w-full text-sm text-left border-collapse">
+          <thead class="text-slate-400">
+            <tr class="border-b border-white/10">
+              <th class="py-3 pr-4 font-semibold">Model</th>
+              <th class="py-3 px-3 font-semibold text-center" colspan="3">General</th>
+              <th class="py-3 px-3 font-semibold text-center" colspan="3">Visual Grounding</th>
+              <th class="py-3 px-3 font-semibold text-center" colspan="3">Long-form Generation</th>
+            </tr>
+            <tr class="text-xs text-slate-500 border-b border-white/10">
+              <th class="py-2 pr-4"></th>
+              <th class="py-2 px-3 text-center font-normal">MME</th>
+              <th class="py-2 px-3 text-center font-normal">MMBench</th>
+              <th class="py-2 px-3 text-center font-normal">MMMU</th>
+              <th class="py-2 px-3 text-center font-normal">RefCOCOg</th>
+              <th class="py-2 px-3 text-center font-normal">Ferret</th>
+              <th class="py-2 px-3 text-center font-normal">GQA</th>
+              <th class="py-2 px-3 text-center font-normal">LLaVA-Bench</th>
+              <th class="py-2 px-3 text-center font-normal">DetailCaps</th>
+              <th class="py-2 px-3 text-center font-normal">MIA</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-300">
+            <tr class="border-b border-white/5">
+              <td class="py-2.5 pr-4 text-slate-400">LLaDA-V</td>
+              <td class="py-2.5 px-3 text-center">1998</td>
+              <td class="py-2.5 px-3 text-center">82.9</td>
+              <td class="py-2.5 px-3 text-center">48.6</td>
+              <td class="py-2.5 px-3 text-center">64.8</td>
+              <td class="py-2.5 px-3 text-center">60.4</td>
+              <td class="py-2.5 px-3 text-center">61.6</td>
+              <td class="py-2.5 px-3 text-center">61.3</td>
+              <td class="py-2.5 px-3 text-center">59.8</td>
+              <td class="py-2.5 px-3 text-center">66.1</td>
+            </tr>
+            <tr class="border-b border-indigo-400/20 bg-indigo-500/[0.05]">
+              <td class="py-2.5 pr-4 text-indigo-300 font-semibold">&nbsp;+ Ours</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">2003</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">83.3</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">49.3</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">65.0</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">62.9</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">61.6</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">64.1</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">63.6</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">67.0</td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="py-2.5 pr-4 text-slate-400">LaViDa</td>
+              <td class="py-2.5 px-3 text-center">1682</td>
+              <td class="py-2.5 px-3 text-center">71.7</td>
+              <td class="py-2.5 px-3 text-center">43.2</td>
+              <td class="py-2.5 px-3 text-center">36.9</td>
+              <td class="py-2.5 px-3 text-center">25.9</td>
+              <td class="py-2.5 px-3 text-center">59.4</td>
+              <td class="py-2.5 px-3 text-center">39.5</td>
+              <td class="py-2.5 px-3 text-center">8.3</td>
+              <td class="py-2.5 px-3 text-center">49.4</td>
+            </tr>
+            <tr class="bg-indigo-500/[0.05]">
+              <td class="py-2.5 pr-4 text-indigo-300 font-semibold">&nbsp;+ Ours</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">1705</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">72.0</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">43.7</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">44.0</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">35.7</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">60.2</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">46.5</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">56.1</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">57.3</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="text-xs text-slate-500 mt-5">
+          Highest gains on visual grounding (LaViDa: RefCOCOg <span class="text-white">+7.1</span>,
+          Ferret <span class="text-white">+9.8</span>) and long-form generation (LaViDa: DetailCaps
+          <span class="text-white">+47.8</span>, LLaVA-Bench <span class="text-white">+7.0</span>).
+          All hyperparameters fixed across tasks; no retraining.
+        </p>
+      </div>
+
+      <!-- Ablation table -->
+      <div class="glow-card rounded-2xl p-6 sm:p-8 mb-10 overflow-x-auto">
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-lg font-semibold text-white">Ablation: each component matters</h3>
+          <span class="pill bg-indigo-500/10 text-indigo-300 border border-indigo-400/20">ablation</span>
+        </div>
+        <p class="text-sm text-slate-400 mb-5 max-w-3xl">
+          Either component alone helps, but the full model (MPS&nbsp;+&nbsp;MRS) gives the most
+          stable and balanced gains across visual grounding and long-form generation.
+          <span class="text-slate-300">MPS</span>: Mask Prior Suppression ·
+          <span class="text-slate-300">MRS</span>: Monotonic RoPE Scaling.
+        </p>
+        <table class="w-full text-sm text-left border-collapse">
+          <thead class="text-slate-400">
+            <tr class="border-b border-white/10">
+              <th class="py-3 pr-4 font-semibold">Model</th>
+              <th class="py-3 px-3 font-semibold text-center">MPS</th>
+              <th class="py-3 px-3 font-semibold text-center">MRS</th>
+              <th class="py-3 px-3 font-semibold text-center" colspan="2">Visual Grounding</th>
+              <th class="py-3 px-3 font-semibold text-center" colspan="2">Long-form Generation</th>
+            </tr>
+            <tr class="text-xs text-slate-500 border-b border-white/10">
+              <th class="py-2 pr-4"></th>
+              <th class="py-2 px-3"></th>
+              <th class="py-2 px-3"></th>
+              <th class="py-2 px-3 text-center font-normal">RefCOCOg</th>
+              <th class="py-2 px-3 text-center font-normal">Ferret</th>
+              <th class="py-2 px-3 text-center font-normal">LLaVA-Bench</th>
+              <th class="py-2 px-3 text-center font-normal">DetailCaps</th>
+            </tr>
+          </thead>
+          <tbody class="text-slate-300">
+            <!-- LLaDA-V block -->
+            <tr class="border-b border-white/5">
+              <td class="py-2.5 pr-4 text-slate-400">LLaDA-V</td>
+              <td class="py-2.5 px-3 text-center text-slate-600">—</td>
+              <td class="py-2.5 px-3 text-center text-slate-600">—</td>
+              <td class="py-2.5 px-3 text-center">64.8</td>
+              <td class="py-2.5 px-3 text-center">60.4</td>
+              <td class="py-2.5 px-3 text-center">61.3</td>
+              <td class="py-2.5 px-3 text-center">59.8</td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="py-2.5 pr-4 text-slate-500"></td>
+              <td class="py-2.5 px-3 text-center text-indigo-300">✓</td>
+              <td class="py-2.5 px-3 text-center text-slate-600">—</td>
+              <td class="py-2.5 px-3 text-center">64.8</td>
+              <td class="py-2.5 px-3 text-center">60.2</td>
+              <td class="py-2.5 px-3 text-center">61.7</td>
+              <td class="py-2.5 px-3 text-center">60.0</td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="py-2.5 pr-4 text-slate-500"></td>
+              <td class="py-2.5 px-3 text-center text-slate-600">—</td>
+              <td class="py-2.5 px-3 text-center text-indigo-300">✓</td>
+              <td class="py-2.5 px-3 text-center">64.8</td>
+              <td class="py-2.5 px-3 text-center">60.6</td>
+              <td class="py-2.5 px-3 text-center">63.9</td>
+              <td class="py-2.5 px-3 text-center">60.0</td>
+            </tr>
+            <tr class="border-b border-indigo-400/20 bg-indigo-500/[0.05]">
+              <td class="py-2.5 pr-4 text-indigo-300 font-semibold">&nbsp;+ Ours</td>
+              <td class="py-2.5 px-3 text-center text-indigo-300">✓</td>
+              <td class="py-2.5 px-3 text-center text-indigo-300">✓</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">65.0</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">62.9</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">64.1</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">63.6</td>
+            </tr>
+            <!-- LaViDa block -->
+            <tr class="border-b border-white/5">
+              <td class="py-2.5 pr-4 text-slate-400">LaViDa</td>
+              <td class="py-2.5 px-3 text-center text-slate-600">—</td>
+              <td class="py-2.5 px-3 text-center text-slate-600">—</td>
+              <td class="py-2.5 px-3 text-center">36.9</td>
+              <td class="py-2.5 px-3 text-center">25.9</td>
+              <td class="py-2.5 px-3 text-center">39.5</td>
+              <td class="py-2.5 px-3 text-center">8.3</td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="py-2.5 pr-4 text-slate-500"></td>
+              <td class="py-2.5 px-3 text-center text-indigo-300">✓</td>
+              <td class="py-2.5 px-3 text-center text-slate-600">—</td>
+              <td class="py-2.5 px-3 text-center">44.0</td>
+              <td class="py-2.5 px-3 text-center">35.4</td>
+              <td class="py-2.5 px-3 text-center">42.3</td>
+              <td class="py-2.5 px-3 text-center">56.1</td>
+            </tr>
+            <tr class="border-b border-white/5">
+              <td class="py-2.5 pr-4 text-slate-500"></td>
+              <td class="py-2.5 px-3 text-center text-slate-600">—</td>
+              <td class="py-2.5 px-3 text-center text-indigo-300">✓</td>
+              <td class="py-2.5 px-3 text-center">39.5</td>
+              <td class="py-2.5 px-3 text-center">29.8</td>
+              <td class="py-2.5 px-3 text-center">41.0</td>
+              <td class="py-2.5 px-3 text-center">8.3</td>
+            </tr>
+            <tr class="bg-indigo-500/[0.05]">
+              <td class="py-2.5 pr-4 text-indigo-300 font-semibold">&nbsp;+ Ours</td>
+              <td class="py-2.5 px-3 text-center text-indigo-300">✓</td>
+              <td class="py-2.5 px-3 text-center text-indigo-300">✓</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">44.0</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">35.7</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">46.5</td>
+              <td class="py-2.5 px-3 text-center text-white font-medium">56.1</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="text-xs text-slate-500 mt-5">
+          On LaViDa, MPS alone unlocks the largest jump on DetailCaps
+          (<span class="text-white">8.3 → 56.1</span>) — confirming that mask prior drift drives
+          long-form collapse. MRS independently lifts LLaVA-Bench on LLaDA-V
+          (<span class="text-white">61.3 → 63.9</span>).
+        </p>
+      </div>
+
+      <!-- Section divider label -->
+      <div class="flex items-center gap-3 mb-6 mt-14">
+        <div class="h-px flex-1 bg-white/10"></div>
+        <span class="text-xs uppercase tracking-widest text-slate-500">Qualitative examples</span>
+        <div class="h-px flex-1 bg-white/10"></div>
+      </div>
+
+      <!-- Example 1: LLaDA-V -->
+      <div class="glow-card rounded-2xl p-6 sm:p-8 mb-8">
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-lg font-semibold text-white">LLaDA-V — &ldquo;Describe the image in detail.&rdquo;</h3>
+          <span class="pill bg-white/5 text-slate-300 border border-white/10">qualitative</span>
+        </div>
+        <div class="grid md:grid-cols-2 gap-5">
+          <div class="rounded-xl border border-white/10 bg-ink-900/60 p-5">
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Baseline</div>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              The image shows a dog and a cat. The dog and a cat. The dog and a cat
+              sitting together. The dog and a cat sitting together…
+            </p>
+          </div>
+          <div class="rounded-xl border border-indigo-400/30 bg-indigo-500/[0.06] p-5 shadow-glow-sm">
+            <div class="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-2">Ours</div>
+            <p class="text-slate-100 text-sm leading-relaxed">
+              A golden retriever and a tabby cat sit side by side on a wooden floor.
+              The dog gazes toward the camera while the cat looks off to the left,
+              its tail curled around its paws.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Example 2: LaViDa -->
+      <div class="glow-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-5">
+          <h3 class="text-lg font-semibold text-white">LaViDa — &ldquo;Describe the image in detail.&rdquo;</h3>
+          <span class="pill bg-white/5 text-slate-300 border border-white/10">qualitative</span>
+        </div>
+        <div class="grid md:grid-cols-2 gap-5">
+          <div class="rounded-xl border border-white/10 bg-ink-900/60 p-5">
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Baseline</div>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              A dog and cat. A dog and a cat. There is a dog and a cat in the picture…
+            </p>
+          </div>
+          <div class="rounded-xl border border-indigo-400/30 bg-indigo-500/[0.06] p-5 shadow-glow-sm">
+            <div class="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-2">Ours</div>
+            <p class="text-slate-100 text-sm leading-relaxed">
+              The photograph captures a small dog and a striped cat lying close together
+              on a light-colored surface, their bodies relaxed and facing the viewer.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-center text-xs text-slate-500 mt-6">
+        Generations are produced by <code class="font-mono text-slate-400">generate_demo_ours.py</code>
+        and <code class="font-mono text-slate-400">predict_ours.py</code> in the released code.
+      </p>
+    </div>
+  </section>
+
+  <!-- ===== BibTeX ===== -->
+  <section id="bibtex" class="relative py-24 border-t border-white/5">
+    <div class="absolute inset-x-0 top-0 h-px divider-glow"></div>
+    <div class="max-w-4xl mx-auto px-6">
+      <div class="text-center mb-10">
+        <span class="pill bg-indigo-500/10 text-indigo-300 border border-indigo-400/20">Cite</span>
+        <h2 class="mt-4 text-3xl sm:text-4xl font-bold text-white">BibTeX</h2>
+      </div>
+
+      <div class="relative">
+        <button onclick="copyBibtex()" id="copyBtn"
+                class="absolute right-3 top-3 btn-ghost text-xs font-medium px-2.5 py-1 rounded-md text-slate-200">
+          Copy
+        </button>
+<pre class="code" id="bibtex"><code>@inproceedings{mpdpac2026,
+  title     = {Mitigating Mask Prior Drift and Positional Attention Collapse
+               in Large Diffusion Vision-Language Models},
+  author    = {Anonymous},
+  booktitle = {ICML},
+  year      = {2026}
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Footer ===== -->
+  <footer class="border-t border-white/5 py-10 text-center text-xs text-slate-500">
+    <div class="max-w-5xl mx-auto px-6">
+      <p>
+        © 2026 &nbsp;·&nbsp; Project page for the ICML 2026 submission.
+        Design inspired by <a href="https://open.cruip.com/" class="text-indigo-300 hover:text-white" target="_blank" rel="noopener">Cruip Open</a>.
+        Structure adapted from academic project page conventions.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    function copyBibtex() {
+      const text = document.getElementById('bibtex').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyBtn');
+        const prev = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = prev, 1500);
+      });
+    }
+
+    // Scroll reveal: fade + slide-up when a section enters the viewport
+    (function () {
+      const targets = document.querySelectorAll('section, footer');
+      targets.forEach(el => el.classList.add('reveal'));
+
+      if (!('IntersectionObserver' in window)) {
+        targets.forEach(el => el.classList.add('is-visible'));
+        return;
+      }
+
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+
+      targets.forEach(el => io.observe(el));
+    })();
+  </script>
+</body>
+</html>
