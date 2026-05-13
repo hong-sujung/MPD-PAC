@@ -331,7 +331,7 @@
         </div>
         <div class="grid md:grid-cols-5 gap-6 items-center">
           <div class="md:col-span-3 rounded-xl border border-white/10 bg-ink-900/40 p-3">
-            <img src="static/images/figure2.png" alt="Figure 2 — token repetition and mask prior drift"
+            <img src="static/images/fig_analysis1.svg" alt="Figure 2 — token repetition and mask prior drift"
                  class="w-full rounded-lg block bg-white" />
             <p class="text-center text-xs text-slate-500 mt-3">
               Figure&nbsp;2. (a) Fewer generation steps → lower distinct-n and higher repetition.
@@ -382,7 +382,7 @@
             </p>
           </div>
           <div class="md:col-span-3 order-1 md:order-2 rounded-xl border border-white/10 bg-ink-900/40 p-3">
-            <img src="static/images/figure3.png" alt="Figure 3 — positional attention collapse"
+            <img src="static/images/fig_freq.png" alt="Figure 3 — positional attention collapse"
                  class="w-full rounded-lg block bg-white" />
             <p class="text-center text-xs text-slate-500 mt-3">
               Figure&nbsp;3. (a) Attention vs. relative distance — mask tokens are over-attended, visual tokens
@@ -707,52 +707,199 @@
         <div class="h-px flex-1 bg-white/10"></div>
       </div>
 
-      <!-- Example 1: LLaDA-V -->
-      <div class="glow-card rounded-2xl p-6 sm:p-8 mb-8">
+      <!-- ===== Qualitative carousel ===== -->
+      <div id="qual-carousel" class="relative">
+        <!-- Track (slides) -->
+        <div class="overflow-hidden">
+          <div id="qual-track" class="flex transition-transform duration-500 ease-out">
+        <!-- Example 1: LLaDA-V — Visual Grounding (RefCOCOg) -->
+            <div class="w-full flex-shrink-0 px-1">
+      <div class="glow-card rounded-2xl p-6 sm:p-8">
         <div class="flex items-center justify-between mb-5">
-          <h3 class="text-lg font-semibold text-white">LLaDA-V — &ldquo;Describe the image in detail.&rdquo;</h3>
-          <span class="pill bg-white/5 text-slate-300 border border-white/10">qualitative</span>
-        </div>
-        <div class="grid md:grid-cols-2 gap-5">
-          <div class="rounded-xl border border-white/10 bg-ink-900/60 p-5">
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Baseline</div>
-            <p class="text-slate-300 text-sm leading-relaxed">
-              The image shows a dog and a cat. The dog and a cat. The dog and a cat
-              sitting together. The dog and a cat sitting together…
-            </p>
+          <div>
+            <h3 class="text-lg font-semibold text-white">LLaDA-V — &ldquo;Provide a short description for this region.&rdquo;</h3>
+            <p class="text-xs text-slate-500 mt-1">Visual grounding · RefCOCOg-style</p>
           </div>
-          <div class="rounded-xl border border-indigo-400/30 bg-indigo-500/[0.06] p-5 shadow-glow-sm">
-            <div class="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-2">Ours</div>
-            <p class="text-slate-100 text-sm leading-relaxed">
-              A golden retriever and a tabby cat sit side by side on a wooden floor.
-              The dog gazes toward the camera while the cat looks off to the left,
-              its tail curled around its paws.
-            </p>
+          <span class="pill bg-white/5 text-slate-300 border border-white/10">grounding</span>
+        </div>
+        <div class="grid md:grid-cols-5 gap-5 items-start">
+          <div class="md:col-span-2">
+            <div class="rounded-xl border border-white/10 bg-ink-900/60 p-2 max-w-[220px] mx-auto">
+              <img src="static/images/qual1.png" alt="LLaDA-V grounding input"
+                   class="w-full rounded-lg block bg-white" />
+            </div>
+            <p class="text-center text-[11px] text-slate-500 mt-2 uppercase tracking-wider">Input · red box = target</p>
+          </div>
+          <div class="md:col-span-3 grid grid-cols-1 gap-4">
+            <div class="rounded-xl border border-white/10 bg-ink-900/60 p-5">
+              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Baseline</div>
+              <p class="text-slate-300 text-sm leading-relaxed">
+                The woman in the <span class="text-rose-300 font-medium">red shirt</span>.
+              </p>
+            </div>
+            <div class="rounded-xl border border-indigo-400/30 bg-indigo-500/[0.06] p-5 shadow-glow-sm">
+              <div class="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-2">Ours</div>
+              <p class="text-slate-100 text-sm leading-relaxed">
+                A woman in a <span class="text-indigo-300 font-medium">green shirt</span>.
+              </p>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Example 2: LaViDa -->
+            </div>
+            <!-- Example 2: LaViDa — Visual Grounding -->
+            <div class="w-full flex-shrink-0 px-1">
       <div class="glow-card rounded-2xl p-6 sm:p-8">
         <div class="flex items-center justify-between mb-5">
-          <h3 class="text-lg font-semibold text-white">LaViDa — &ldquo;Describe the image in detail.&rdquo;</h3>
-          <span class="pill bg-white/5 text-slate-300 border border-white/10">qualitative</span>
-        </div>
-        <div class="grid md:grid-cols-2 gap-5">
-          <div class="rounded-xl border border-white/10 bg-ink-900/60 p-5">
-            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Baseline</div>
-            <p class="text-slate-300 text-sm leading-relaxed">
-              A dog and cat. A dog and a cat. There is a dog and a cat in the picture…
-            </p>
+          <div>
+            <h3 class="text-lg font-semibold text-white">LaViDa — &ldquo;Provide a short description for this region.&rdquo;</h3>
+            <p class="text-xs text-slate-500 mt-1">Visual grounding · RefCOCOg-style</p>
           </div>
-          <div class="rounded-xl border border-indigo-400/30 bg-indigo-500/[0.06] p-5 shadow-glow-sm">
-            <div class="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-2">Ours</div>
-            <p class="text-slate-100 text-sm leading-relaxed">
-              The photograph captures a small dog and a striped cat lying close together
-              on a light-colored surface, their bodies relaxed and facing the viewer.
-            </p>
+          <span class="pill bg-white/5 text-slate-300 border border-white/10">grounding</span>
+        </div>
+        <div class="grid md:grid-cols-5 gap-5 items-start">
+          <div class="md:col-span-2">
+            <div class="rounded-xl border border-white/10 bg-ink-900/60 p-2 max-w-[220px] mx-auto">
+              <img src="static/images/qual2.png" alt="LaViDa grounding input"
+                   class="w-full rounded-lg block bg-white" />
+            </div>
+            <p class="text-center text-[11px] text-slate-500 mt-2 uppercase tracking-wider">Input · red box = target</p>
+          </div>
+          <div class="md:col-span-3 grid grid-cols-1 gap-4">
+            <div class="rounded-xl border border-white/10 bg-ink-900/60 p-5">
+              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Baseline</div>
+              <p class="text-slate-300 text-sm leading-relaxed">
+                The <span class="text-rose-300 font-medium">net</span> of a tennis court.
+              </p>
+            </div>
+            <div class="rounded-xl border border-indigo-400/30 bg-indigo-500/[0.06] p-5 shadow-glow-sm">
+              <div class="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-2">Ours</div>
+              <p class="text-slate-100 text-sm leading-relaxed">
+                A <span class="text-indigo-300 font-medium">woman</span> holding a tennis racket.
+              </p>
+            </div>
           </div>
         </div>
+      </div>
+
+            </div>
+            <!-- Example 3: LLaDA-V — Long-form description (MIA) -->
+            <div class="w-full flex-shrink-0 px-1">
+      <div class="glow-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h3 class="text-lg font-semibold text-white">LLaDA-V — &ldquo;Write a short real-estate ad for this room. Mention three selling points.&rdquo;</h3>
+            <p class="text-xs text-slate-500 mt-1">Long-form generation · MIA-style</p>
+          </div>
+          <span class="pill bg-white/5 text-slate-300 border border-white/10">long-form</span>
+        </div>
+        <div class="grid md:grid-cols-5 gap-5 items-start">
+          <div class="md:col-span-2">
+            <div class="rounded-xl border border-white/10 bg-ink-900/60 p-2 max-w-[220px] mx-auto">
+              <img src="static/images/qual3.jpg" alt="LLaDA-V long-form input"
+                   class="w-full rounded-lg block bg-white" />
+            </div>
+            <p class="text-center text-[11px] text-slate-500 mt-2 uppercase tracking-wider">Input</p>
+          </div>
+          <div class="md:col-span-3 grid grid-cols-1 gap-4">
+            <div class="rounded-xl border border-white/10 bg-ink-900/60 p-5">
+              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Baseline</div>
+              <p class="text-slate-300 text-sm leading-relaxed">
+                This this room bedroom offers a cozy retreat inviting relaxation.
+                <span class="text-rose-300 font-medium">1. The. The. The. The. 2.. The. The. The. The. The. The 3.. The.</span>
+                The room's design combines functionality and comfort, making it a perfect
+                space for rest and unwind.
+              </p>
+            </div>
+            <div class="rounded-xl border border-indigo-400/30 bg-indigo-500/[0.06] p-5 shadow-glow-sm">
+              <div class="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-2">Ours</div>
+              <p class="text-slate-100 text-sm leading-relaxed">
+                This bedroom offers a cozy retreat with a
+                <span class="text-indigo-300 font-medium">comfortable and inviting bed</span>.
+                The <span class="text-indigo-300 font-medium">soft pillows</span> create a relaxing
+                ambiance, while <span class="text-indigo-300 font-medium">warm lighting from the
+                lamps</span> provides a cozy glow throughout the room. The
+                <span class="text-indigo-300 font-medium">wooden furniture</span> adds a touch of
+                warmth and style, making it a perfect space to relax and unwind.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+            </div>
+            <!-- Example 4: LaViDa — Long-form description -->
+            <div class="w-full flex-shrink-0 px-1">
+      <div class="glow-card rounded-2xl p-6 sm:p-8">
+        <div class="flex items-center justify-between mb-5">
+          <div>
+            <h3 class="text-lg font-semibold text-white">LaViDa — &ldquo;Express the feelings that might be elicited by this image using a first-person perspective, specify any author's name visible, while implying a sense of nostalgia.&rdquo;</h3>
+            <p class="text-xs text-slate-500 mt-1">Long-form generation</p>
+          </div>
+          <span class="pill bg-white/5 text-slate-300 border border-white/10">long-form</span>
+        </div>
+        <div class="grid md:grid-cols-5 gap-5 items-start">
+          <div class="md:col-span-2">
+            <div class="rounded-xl border border-white/10 bg-ink-900/60 p-2 max-w-[220px] mx-auto">
+              <img src="static/images/qual4.jpg" alt="LaViDa long-form input"
+                   class="w-full rounded-lg block bg-white" />
+            </div>
+            <p class="text-center text-[11px] text-slate-500 mt-2 uppercase tracking-wider">Input</p>
+          </div>
+          <div class="md:col-span-3 grid grid-cols-1 gap-4">
+            <div class="rounded-xl border border-white/10 bg-ink-900/60 p-5">
+              <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Baseline</div>
+              <p class="text-slate-300 text-sm leading-relaxed">
+                This, this image evokes a sense of nostalgia and
+                <span class="text-rose-300 font-medium">the. The, the stack of the,, the, the,
+                the, the, the, the, the, the, the, the, the, the, the, the, the, the, the,
+                the, the, the the.</span>
+              </p>
+            </div>
+            <div class="rounded-xl border border-indigo-400/30 bg-indigo-500/[0.06] p-5 shadow-glow-sm">
+              <div class="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-2">Ours</div>
+              <p class="text-slate-100 text-sm leading-relaxed">
+                This image evokes a sense of
+                <span class="text-indigo-300 font-medium">nostalgia and the timeless appeal of
+                classic literature</span>. The presence of classics like
+                <span class="text-indigo-300 font-medium">&ldquo;The Soul of&rdquo; by George
+                Bernard Shaw</span> and
+                <span class="text-indigo-300 font-medium">&ldquo;The Paintedcible&rdquo; by
+                William Goldle</span> suggests a collection of works that have been
+                <span class="text-indigo-300 font-medium">cherished over the years</span>,
+                invoking a sense of the past continuing in the present.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Prev / Next buttons -->
+        <button id="qual-prev" type="button"
+                class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-4 w-10 h-10 rounded-full bg-ink-900/80 border border-white/15 backdrop-blur text-white/80 hover:text-white hover:border-indigo-400/50 hover:bg-ink-800 flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Previous example">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button id="qual-next" type="button"
+                class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-4 w-10 h-10 rounded-full bg-ink-900/80 border border-white/15 backdrop-blur text-white/80 hover:text-white hover:border-indigo-400/50 hover:bg-ink-800 flex items-center justify-center transition disabled:opacity-30 disabled:cursor-not-allowed"
+                aria-label="Next example">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </button>
+
+        <!-- Pagination dots -->
+        <div id="qual-dots" class="flex justify-center gap-2 mt-6">
+          <button type="button" data-idx="0" class="qual-dot w-2.5 h-2.5 rounded-full bg-white/20 hover:bg-white/40 transition" aria-label="Slide 1"></button>
+          <button type="button" data-idx="1" class="qual-dot w-2.5 h-2.5 rounded-full bg-white/20 hover:bg-white/40 transition" aria-label="Slide 2"></button>
+          <button type="button" data-idx="2" class="qual-dot w-2.5 h-2.5 rounded-full bg-white/20 hover:bg-white/40 transition" aria-label="Slide 3"></button>
+          <button type="button" data-idx="3" class="qual-dot w-2.5 h-2.5 rounded-full bg-white/20 hover:bg-white/40 transition" aria-label="Slide 4"></button>
+        </div>
+
+        <!-- Slide counter -->
+        <p id="qual-counter" class="text-center text-xs text-slate-500 mt-3 uppercase tracking-widest">1 / 4</p>
       </div>
 
       <p class="text-center text-xs text-slate-500 mt-6">
@@ -831,6 +978,64 @@
       }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
 
       targets.forEach(el => io.observe(el));
+    })();
+
+    // Qualitative carousel
+    (function () {
+      const track = document.getElementById('qual-track');
+      const prev = document.getElementById('qual-prev');
+      const next = document.getElementById('qual-next');
+      const dots = document.querySelectorAll('.qual-dot');
+      const counter = document.getElementById('qual-counter');
+      if (!track) return;
+
+      const total = track.children.length;
+      let idx = 0;
+
+      function render() {
+        track.style.transform = `translateX(-${idx * 100}%)`;
+        dots.forEach((d, i) => {
+          d.classList.toggle('bg-indigo-400', i === idx);
+          d.classList.toggle('bg-white/20', i !== idx);
+          d.classList.toggle('w-6', i === idx);
+          d.classList.toggle('w-2.5', i !== idx);
+        });
+        if (counter) counter.textContent = `${idx + 1} / ${total}`;
+        prev.disabled = idx === 0;
+        next.disabled = idx === total - 1;
+      }
+
+      prev.addEventListener('click', () => { if (idx > 0) { idx--; render(); } });
+      next.addEventListener('click', () => { if (idx < total - 1) { idx++; render(); } });
+      dots.forEach(d => d.addEventListener('click', () => {
+        idx = parseInt(d.dataset.idx, 10);
+        render();
+      }));
+
+      // Keyboard arrows when carousel is roughly in view
+      document.addEventListener('keydown', (e) => {
+        const rect = track.getBoundingClientRect();
+        const inView = rect.top < window.innerHeight && rect.bottom > 0;
+        if (!inView) return;
+        if (e.key === 'ArrowLeft' && idx > 0) { idx--; render(); }
+        if (e.key === 'ArrowRight' && idx < total - 1) { idx++; render(); }
+      });
+
+      // Touch swipe
+      let startX = null;
+      track.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend', (e) => {
+        if (startX === null) return;
+        const dx = e.changedTouches[0].clientX - startX;
+        if (Math.abs(dx) > 40) {
+          if (dx < 0 && idx < total - 1) idx++;
+          if (dx > 0 && idx > 0) idx--;
+          render();
+        }
+        startX = null;
+      });
+
+      render();
     })();
   </script>
 </body>
