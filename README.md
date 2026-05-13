@@ -5,7 +5,7 @@
 **ICML 2026**
 
 <p>
-  <a href="https://noonddudung2.github.io/MPD-PAC/">
+  <a href="https://hong-sujung.github.io/MPD-PAC/">
     <img src="https://img.shields.io/badge/Project-Page-4f46e5?style=flat-square&logo=githubpages&logoColor=white" alt="Project Page">
   </a>
   <a href="https://arxiv.org/abs/XXXX.XXXXX">
