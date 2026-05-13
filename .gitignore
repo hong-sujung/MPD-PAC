@@ -73,8 +73,8 @@ Thumbs.db
 CLAUDE.md
 .claude/
 
-# Draft paper PDFs in docs (keep the published site, ignore drafts)
-docs/*.pdf
+# Project page lives on the gh-pages branch; keep docs/ out of main
+docs/
 
 # Heavy artifacts inside model integration directories
 LLaDA-V/checkpoints/
