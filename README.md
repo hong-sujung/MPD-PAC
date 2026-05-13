@@ -5,17 +5,17 @@
 **ICML 2026**
 
 <p>
-  <a href="https://hong-sujung.github.io/MPD-PAC/">
-    <img src="https://img.shields.io/badge/Project-Page-4f46e5?style=for-the-badge&logo=githubpages&logoColor=white" alt="Project Page">
+  <a href="https://noonddudung2.github.io/MPD-PAC/">
+    <img src="https://img.shields.io/badge/Project-Page-4f46e5?style=flat-square&logo=githubpages&logoColor=white" alt="Project Page">
   </a>
   <a href="https://arxiv.org/abs/XXXX.XXXXX">
-    <img src="https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b?style=for-the-badge&logo=arxiv&logoColor=white" alt="arXiv">
+    <img src="https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv">
   </a>
-  <a href="#">
-    <img src="https://img.shields.io/badge/Paper-PDF-b91c1c?style=for-the-badge&logo=adobeacrobatreader&logoColor=white" alt="Paper PDF">
-  </a>
+  <!-- <a href="#">
+    <img src="https://img.shields.io/badge/Paper-PDF-b91c1c?style=flat-square&logo=adobeacrobatreader&logoColor=white" alt="Paper PDF">
+  </a> -->
   <a href="#citation">
-    <img src="https://img.shields.io/badge/BibTeX-Cite-64748b?style=for-the-badge&logo=latex&logoColor=white" alt="BibTeX">
+    <img src="https://img.shields.io/badge/BibTeX-Cite-64748b?style=flat-square&logo=latex&logoColor=white" alt="BibTeX">
   </a>
 </p>
 
@@ -94,7 +94,7 @@ the largest gains on visual grounding and long-form generation.
 | **+ Ours** | **44.0** | **35.7** | **46.5** | **56.1** | **57.3** |
 
 Highest absolute gains on **LaViDa**: DetailCaps **+47.8**, Ferret **+9.8**, MIA **+7.9**.
-See the [project page](https://hong-sujung.github.io/MPD-PAC/) for the full table,
+See the [project page](https://noonddudung2.github.io/MPD-PAC/) for the full table,
 ablations, and qualitative examples.
 
 ---
@@ -184,12 +184,14 @@ Defaults used in the paper: `mode="sigmoid"`, `slope=8.0`, `center=0.6`,
 If you find this work useful, please cite:
 
 ```bibtex
-@inproceedings{mpdpac2026,
-  title     = {Mitigating Mask Prior Drift and Positional Attention Collapse
-               in Large Diffusion Vision-Language Models},
-  author    = {Hong, Sujung and Yoon, Chanyong and Hwang, Seongjae},
-  booktitle = {Proceedings of the International Conference on Machine Learning (ICML)},
-  year      = {2026}
+@misc{mpdpac2026,
+  title         = {Mitigating Mask Prior Drift and Positional Attention Collapse
+                   in Large Diffusion Vision-Language Models},
+  author        = {Hong, Sujung and Yoon, Chanyong and Hwang, Seongjae},
+  year          = {2026},
+  eprint        = {XXXX.XXXXX},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
 }
 ```
 

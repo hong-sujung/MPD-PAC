@@ -196,7 +196,7 @@
         <a href="#results" class="hover:text-white">Results</a>
         <a href="#bibtex" class="hover:text-white">BibTeX</a>
       </nav>
-      <a href="https://github.com/" target="_blank" rel="noopener"
+      <a href="https://github.com/noonddudung2/MPD-PAC" target="_blank" rel="noopener"
          class="text-xs font-semibold px-3 py-1.5 rounded-md btn-ghost text-white/90">
         Code &nbsp;↗
       </a>
@@ -228,30 +228,38 @@
 
       <!-- Authors -->
       <div class="mt-10 text-sm sm:text-base text-slate-300">
-        <div class="flex flex-wrap justify-center gap-x-4 gap-y-1">
-          <span><a href="#" class="hover:text-white">Sujung Hong</a></span>
-          <span><a href="#" class="hover:text-white">Chanyong Yoon</a></span>
-          <span><a href="#" class="hover:text-white">Seongjae Hwang</a></span>
+        <div class="flex flex-wrap justify-center items-baseline gap-x-5 gap-y-1">
+          <span class="text-white">Sujung Hong<sup class="text-indigo-300">1</sup></span>
+          <span class="text-white">Chanyong Yoon<sup class="text-indigo-300">1</sup></span>
+          <span class="text-white">Seongjae Hwang<sup class="text-indigo-300">1</sup></span>
         </div>
-        <div class="mt-2 text-slate-400 text-sm">Yonsei University &nbsp;·&nbsp; ICML 2026</div>
+        <div class="mt-3 text-slate-400 text-sm">
+          <sup class="text-indigo-300">1</sup>&nbsp;Yonsei University
+          <!-- &nbsp;·&nbsp; -->
+          <!-- <sup class="text-indigo-300">&#9993;</sup>&nbsp;Correspondence: -->
+          <!-- <a href="mailto:seongjae@yonsei.ac.kr" class="text-slate-300 hover:text-white underline-offset-2 hover:underline">seongjae@yonsei.ac.kr</a> -->
+        </div>
+        <div class="mt-2 text-slate-500 text-xs uppercase tracking-widest">ICML 2026</div>
       </div>
 
       <!-- Buttons -->
       <div class="mt-10 flex flex-wrap justify-center gap-3">
-        <a href="#" class="btn-primary text-white font-semibold rounded-lg px-5 py-2.5 text-sm inline-flex items-center gap-2">
+        <a href="#" class="btn-primary text-white font-semibold rounded-lg px-5 py-2.5 text-sm inline-flex items-center gap-2"
+           title="Paper PDF — coming soon">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm-1 7V3.5L18.5 9H13Z"/></svg>
           Paper
         </a>
-        <a href="#" class="btn-ghost text-white/90 font-semibold rounded-lg px-5 py-2.5 text-sm inline-flex items-center gap-2">
+        <a href="#" class="btn-ghost text-white/90 font-semibold rounded-lg px-5 py-2.5 text-sm inline-flex items-center gap-2"
+           title="arXiv — coming soon">
           arXiv
           <span class="text-indigo-300">↗</span>
         </a>
-        <a href="https://github.com/" target="_blank" rel="noopener"
+        <a href="https://github.com/noonddudung2/MPD-PAC" target="_blank" rel="noopener"
            class="btn-ghost text-white/90 font-semibold rounded-lg px-5 py-2.5 text-sm inline-flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.69 1.24 3.34.95.1-.74.4-1.24.72-1.53-2.55-.29-5.24-1.28-5.24-5.71 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.47.11-3.07 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.6.23 2.78.11 3.07.73.81 1.18 1.84 1.18 3.1 0 4.44-2.69 5.42-5.25 5.71.41.35.78 1.05.78 2.12v3.14c0 .31.21.67.79.56C20.21 21.38 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"/></svg>
           Code
         </a>
-        <a href="#" class="btn-ghost text-white/90 font-semibold rounded-lg px-5 py-2.5 text-sm inline-flex items-center gap-2">
+        <a href="#bibtex" class="btn-ghost text-white/90 font-semibold rounded-lg px-5 py-2.5 text-sm inline-flex items-center gap-2">
           BibTeX
         </a>
       </div>
@@ -768,12 +776,14 @@
                 class="absolute right-3 top-3 btn-ghost text-xs font-medium px-2.5 py-1 rounded-md text-slate-200">
           Copy
         </button>
-<pre class="code" id="bibtex"><code>@inproceedings{mpdpac2026,
-  title     = {Mitigating Mask Prior Drift and Positional Attention Collapse
-               in Large Diffusion Vision-Language Models},
-  author    = {Anonymous},
-  booktitle = {ICML},
-  year      = {2026}
+<pre class="code" id="bibtex"><code>@misc{mpdpac2026,
+  title         = {Mitigating Mask Prior Drift and Positional Attention Collapse
+                   in Large Diffusion Vision-Language Models},
+  author        = {Hong, Sujung and Yoon, Chanyong and Hwang, Seongjae},
+  year          = {2026},
+  eprint        = {XXXX.XXXXX},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV}
 }</code></pre>
       </div>
     </div>
@@ -783,9 +793,9 @@
   <footer class="border-t border-white/5 py-10 text-center text-xs text-slate-500">
     <div class="max-w-5xl mx-auto px-6">
       <p>
-        © 2026 &nbsp;·&nbsp; Project page for the ICML 2026 submission.
-        Design inspired by <a href="https://open.cruip.com/" class="text-indigo-300 hover:text-white" target="_blank" rel="noopener">Cruip Open</a>.
-        Structure adapted from academic project page conventions.
+        © 2026 &nbsp;·&nbsp; Project page for the ICML 2026.
+        <!-- Design inspired by <a href="https://open.cruip.com/" class="text-indigo-300 hover:text-white" target="_blank" rel="noopener">Cruip Open</a>. -->
+        <!-- Structure adapted from academic project page conventions. -->
       </p>
     </div>
   </footer>
