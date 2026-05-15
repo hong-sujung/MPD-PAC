@@ -8,8 +8,8 @@
   <a href="https://hong-sujung.github.io/MPD-PAC/">
     <img src="https://img.shields.io/badge/Project-Page-4f46e5?style=flat-square&logo=githubpages&logoColor=white" alt="Project Page">
   </a>
-  <a href="https://arxiv.org/abs/XXXX.XXXXX">
-    <img src="https://img.shields.io/badge/arXiv-XXXX.XXXXX-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv">
+  <a href="http://arxiv.org/abs/2605.14530">
+    <img src="https://img.shields.io/badge/arXiv-2605.14530-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv">
   </a>
   <!-- <a href="#">
     <img src="https://img.shields.io/badge/Paper-PDF-b91c1c?style=flat-square&logo=adobeacrobatreader&logoColor=white" alt="Paper PDF">
@@ -189,7 +189,7 @@ If you find this work useful, please cite:
                    in Large Diffusion Vision-Language Models},
   author        = {Hong, Sujung and Yoon, Chanyong and Hwang, Seongjae},
   year          = {2026},
-  eprint        = {XXXX.XXXXX},
+  eprint        = {2605.14530},
   archivePrefix = {arXiv},
   primaryClass  = {cs.CV}
 }
