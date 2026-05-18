@@ -22,7 +22,7 @@
 <p>
   <a href="#"><b>Sujung&nbsp;Hong</b></a> ·
   <a href="#"><b>Chanyong&nbsp;Yoon</b></a> ·
-  <a href="#"><b>Seongjae&nbsp;Hwang</b></a>
+  <a href="#"><b>Seong Jae&nbsp;Hwang</b></a>
   <br/>
   <sub>Yonsei University</sub>
 </p>
