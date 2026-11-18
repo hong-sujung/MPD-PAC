@@ -1081,12 +1081,18 @@ class LLaDALlamaBlock(LLaDABlock):
         v = self.v_proj(x_normed)
 
         # Get attention scores.
+        mode = "linear" if mode is None else mode
         if self._activation_checkpoint_fn is not None:
+            # Older DeepSpeed checkpoints accept positional arguments only.
             att, cache = self._activation_checkpoint_fn(  # type: ignore
-                self.attention, q, k, v, attention_bias, layer_past=layer_past, use_cache=use_cache,block_mask=block_mask
+                self.attention, q, k, v, attention_bias, layer_past, use_cache, block_mask,
+                mode, slope, center, rope,
             )
         else:
-            att, cache = self.attention(q, k, v, attention_bias, layer_past=layer_past, use_cache=use_cache,block_mask=block_mask)
+            att, cache = self.attention(
+                q, k, v, attention_bias, layer_past=layer_past, use_cache=use_cache, block_mask=block_mask,
+                rope=rope, mode=mode, slope=slope, center=center,
+            )
 
         # Unpack result based on whether attn is requested
         # if attn:
@@ -1527,15 +1533,19 @@ class LLaDAModel(nn.Module):
                     )
                 ):
                     # shape: (batch_size, seq_len, d_model)
-                    # x, cache = self._activation_checkpoint_fn(
-                    #     block, x, attention_bias=attention_bias, layer_past=layer_past, use_cache=use_cache
-                    # )
-                    x, cache = self._activation_checkpoint_fn(
-                        block, x, attention_bias, layer_past, use_cache,block_mask
-                    )
+                    checkpoint_args = (x, attention_bias, layer_past, use_cache, block_mask)
+                    if isinstance(block, LLaDALlamaBlock):
+                        # Keep the default attn argument between mode and slope.
+                        checkpoint_args += (rope, mode, False, slope, center)
+                    x, cache = self._activation_checkpoint_fn(block, *checkpoint_args)
                 else:
                     # shape: (batch_size, seq_len, d_model)
-                    x, cache = block(x, attention_bias=attention_bias, layer_past=layer_past, use_cache=use_cache,block_mask=block_mask)
+                    mrs_kwargs = (
+                        dict(rope=rope, mode=mode, slope=slope, center=center)
+                        if isinstance(block, LLaDALlamaBlock) else {}
+                    )
+                    x, cache = block(x, attention_bias=attention_bias, layer_past=layer_past,
+                                     use_cache=use_cache, block_mask=block_mask, **mrs_kwargs)
                 if attn_key_values is not None:
                     assert cache is not None
                     attn_key_values.append(cache)
