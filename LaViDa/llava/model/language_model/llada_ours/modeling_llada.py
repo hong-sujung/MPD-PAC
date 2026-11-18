@@ -1086,7 +1086,10 @@ class LLaDALlamaBlock(LLaDABlock):
                 self.attention, q, k, v, attention_bias, layer_past=layer_past, use_cache=use_cache,block_mask=block_mask
             )
         else:
-            att, cache = self.attention(q, k, v, attention_bias, layer_past=layer_past, use_cache=use_cache,block_mask=block_mask)
+            att, cache = self.attention(
+                q, k, v, attention_bias, layer_past=layer_past, use_cache=use_cache, block_mask=block_mask,
+                rope=rope, mode="linear" if mode is None else mode, slope=slope, center=center,
+            )
 
         # Unpack result based on whether attn is requested
         # if attn:
@@ -1535,7 +1538,12 @@ class LLaDAModel(nn.Module):
                     )
                 else:
                     # shape: (batch_size, seq_len, d_model)
-                    x, cache = block(x, attention_bias=attention_bias, layer_past=layer_past, use_cache=use_cache,block_mask=block_mask)
+                    mrs_kwargs = (
+                        dict(rope=rope, mode=mode, slope=slope, center=center)
+                        if isinstance(block, LLaDALlamaBlock) else {}
+                    )
+                    x, cache = block(x, attention_bias=attention_bias, layer_past=layer_past,
+                                     use_cache=use_cache, block_mask=block_mask, **mrs_kwargs)
                 if attn_key_values is not None:
                     assert cache is not None
                     attn_key_values.append(cache)
